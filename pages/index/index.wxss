@@ -1,5 +1,26 @@
 /* pages/index/index.wxss */
 
+/* 顶部主视觉 */
+.page-hero {
+  margin: -24rpx -24rpx 0;
+  height: 375rpx;
+  overflow: hidden;
+  background: #0B1030;
+}
+
+.page-hero-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 首张卡片上移，压住主视觉底部约 1/4（375rpx × 1/4 ≈ 94rpx） */
+.preset-card {
+  position: relative;
+  z-index: 1;
+  margin-top: -94rpx;
+}
+
 /* 页脚样式 */
 .site-footer {
   margin-top: 60rpx;

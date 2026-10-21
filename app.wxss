@@ -431,29 +431,7 @@ view, text, button, input {
   font-family: serif;
 }
 
-/* 页头 */
-.page-header {
-  margin-left: -24rpx;
-  margin-right: -24rpx;
-  margin-top: -24rpx;
-  background: linear-gradient(135deg, #4F46E5, #3730A3);
-  padding: 50rpx 40rpx 70rpx 40rpx;
-  color: #FFFFFF;
-}
-
-.page-title {
-  font-size: 46rpx;
-  font-weight: 800;
-  display: block;
-  letter-spacing: 2rpx;
-}
-
-.page-subtitle {
-  font-size: 24rpx;
-  opacity: 0.8;
-  display: block;
-  margin-top: 10rpx;
-}
+/* 页头（已由首页主视觉图片替代，样式见 pages/index/index.wxss） */
 
 /* 隐私提示条 */
 .privacy-banner {

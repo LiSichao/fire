@@ -1,14 +1,13 @@
 <!--pages/index/index.wxml-->
 <view class="container">
 
-  <!-- 页面标题 -->
-  <view class="page-header">
-    <view class="page-title">FIRE 财务自由</view>
-    <view class="page-subtitle">30 秒看清你的人生现金流</view>
+  <!-- 顶部主视觉 -->
+  <view class="page-hero">
+    <image class="page-hero-img" src="/images/hero.jpg" mode="aspectFill" />
   </view>
 
   <!-- 预设场景 -->
-  <view class="card-shadow" style="margin-top: -32rpx;">
+  <view class="card-shadow preset-card">
     <view class="card-header">
       <view class="decorator"></view>
       <text class="card-title-text">快速加载示例</text>
