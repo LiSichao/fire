@@ -63,12 +63,13 @@
       <view class="section-body">
         <view class="slider-block">
           <view class="field-label">你预期每年能赚多少？（年化收益率）</view>
-          <view class="slider-value">{{params.mainRate}}%</view>
+          <view class="slider-value">{{rateDisplay}}%</view>
           <slider 
             min="0" 
             max="15" 
             step="0.01" 
             value="{{params.mainRate}}" 
+            bindchanging="onMainRateChanging"
             bindchange="onMainRateChange"
             activeColor="#6366F1"
             backgroundColor="#E5E7EB"

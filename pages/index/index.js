@@ -175,6 +175,13 @@ const PRESETS = {
   },
 };
 
+// 收益率归一化：滑块返回的浮点数可能带精度误差（如 7.640000000000001）
+function normalizeRate(value) {
+  const n = Number(value);
+  if (!isFinite(n)) return 0;
+  return Math.round(n * 100) / 100;
+}
+
 // 格式化金额（万元）
 function formatMoney(w) {
   if (!isFinite(w)) return '—';
@@ -494,6 +501,9 @@ Page({
     // 模式
     currentMode: 'A',
     currentPreset: '',
+
+    // 滑块实时显示值：拖动时更新，松手才写入 params 并重算
+    rateDisplay: 0,
     
     // 折叠面板状态
     sections: {
@@ -639,6 +649,7 @@ Page({
 
   onUnload() {
     this._flushPersist();
+    this._clearRateTimer();
     if (this._recalcTimer) {
       clearTimeout(this._recalcTimer);
       this._recalcTimer = null;
@@ -677,14 +688,35 @@ Page({
     this._debounceRecalc();
   },
 
-  // 主收益率滑块变化
+  // 拖动过程中：只更新数字，避免高频重算与图表重绘
+  onMainRateChanging(e) {
+    this._pendingRate = normalizeRate(e.detail.value);
+    if (this._rateTimer) return;
+    this._rateTimer = setTimeout(() => {
+      this._rateTimer = null;
+      if (this._pendingRate !== this.data.rateDisplay) {
+        this.setData({ rateDisplay: this._pendingRate });
+      }
+    }, 60);
+  },
+
+  // 松手后：提交数值并重算
   onMainRateChange(e) {
-    const value = e.detail.value;
+    const value = normalizeRate(e.detail.value);
+    this._clearRateTimer();
     this.setData({
       'params.mainRate': value,
+      rateDisplay: value,
       currentPreset: '',
     });
     this._debounceRecalc();
+  },
+
+  _clearRateTimer() {
+    if (this._rateTimer) {
+      clearTimeout(this._rateTimer);
+      this._rateTimer = null;
+    }
   },
 
   // 切换对比收益率
@@ -733,6 +765,7 @@ Page({
       params: newParams,
       currentPreset: key,
       currentMode: 'A',
+      rateDisplay: normalizeRate(newParams.mainRate),
       sections: {
         base: true,
         income: true,
@@ -764,6 +797,7 @@ Page({
       params: defaults,
       currentPreset: '',
       currentMode: 'A',
+      rateDisplay: normalizeRate(defaults.mainRate),
       sections: {
         base: true,
         income: true,
@@ -899,6 +933,7 @@ Page({
 
     const defaults = this._getDefaults();
     const patch = { params: this._sanitizeParams(saved.params, defaults) };
+    patch.rateDisplay = normalizeRate(patch.params.mainRate);
 
     if (saved.currentMode === 'A' || saved.currentMode === 'B') {
       patch.currentMode = saved.currentMode;
@@ -943,7 +978,10 @@ Page({
 
       if (NUMERIC_FIELDS.indexOf(key) >= 0) {
         const num = Number(value);
-        if (isFinite(num) && num >= 0) result[key] = num;
+        if (isFinite(num) && num >= 0) {
+          // 收益率统一保留两位小数，避免历史缓存里的浮点误差
+          result[key] = (key === 'mainRate') ? normalizeRate(num) : num;
+        }
         return;
       }
 
