@@ -21,6 +21,26 @@ const COMPARE_LINE_COLORS = ['#94A3B8', '#A78BFA', '#FB923C', '#06B6D4', '#84CC1
 
 const CURRENT_YEAR = new Date().getFullYear();
 
+// 本地缓存（纯本机存储，不上传）
+const STORAGE_KEY = 'fire_params';
+const STORAGE_VERSION = 1;
+
+// 数值型参数（输入解析与缓存校验共用）
+const NUMERIC_FIELDS = [
+  'startAge', 'endAge', 'initial', 'target', 'mainRate',
+  'incomeStart', 'growthRate', 'growthYears', 'inflationRate',
+  'utilities', 'charging', 'parking', 'broadband',
+  'dailyPerPerson', 'dailyPersons',
+  'filial', 'travelPerPerson', 'travelPersons',
+  'carMonthly', 'carStartYear', 'carEndYear', 'carEndMonth',
+  'mortgageMonthly', 'mortgageStartYear', 'mortgageEndYear', 'mortgageEndMonth',
+  'rent', 'propertyFee',
+  'petMonthly', 'education', 'insurance',
+  'custom1Amount', 'custom2Amount',
+  'housingFundMonthly', 'housingFundUsableRate',
+  'socialSecurityMonthly', 'socialToRetirementRate',
+];
+
 // 同龄人分布数据
 const PEER_DISTRIBUTION = {
   '22-25': { mean: 45, stdDev: 18 },
@@ -595,9 +615,18 @@ Page({
     
     // 防抖定时器
     this._recalcTimer = null;
+    this._persistTimer = null;
     // 图表实例缓存（每个 canvas 只 init 一次）
     this._charts = {};
     this._chartIniting = {};
+
+    // 恢复上次保存在本机的输入
+    this._restore();
+  },
+
+  onHide() {
+    // 切后台/离开时立即落盘，避免防抖窗口内丢数据
+    this._flushPersist();
   },
 
   onReady() {
@@ -609,6 +638,7 @@ Page({
   },
 
   onUnload() {
+    this._flushPersist();
     if (this._recalcTimer) {
       clearTimeout(this._recalcTimer);
       this._recalcTimer = null;
@@ -632,22 +662,9 @@ Page({
   onInput(e) {
     const field = e.currentTarget.dataset.field;
     let value = e.detail.value;
-    
-    // 数字字段转换
-    const numericFields = ['startAge', 'endAge', 'initial', 'target', 'mainRate',
-      'incomeStart', 'growthRate', 'growthYears', 'inflationRate',
-      'utilities', 'charging', 'parking', 'broadband',
-      'dailyPerPerson', 'dailyPersons',
-      'filial', 'travelPerPerson', 'travelPersons',
-      'carMonthly', 'carStartYear', 'carEndYear', 'carEndMonth',
-      'mortgageMonthly', 'mortgageStartYear', 'mortgageEndYear', 'mortgageEndMonth',
-      'rent', 'propertyFee',
-      'petMonthly', 'education', 'insurance',
-      'custom1Amount', 'custom2Amount',
-      'housingFundMonthly', 'housingFundUsableRate',
-      'socialSecurityMonthly', 'socialToRetirementRate'];
 
-    if (numericFields.includes(field)) {
+    // 数字字段转换
+    if (NUMERIC_FIELDS.indexOf(field) >= 0) {
       value = parseFloat(value) || 0;
       if (value < 0) value = 0;
     }
@@ -694,6 +711,7 @@ Page({
     this.setData({
       [`sections.${section}`]: !current,
     });
+    this._schedulePersist();
   },
 
   // 应用预设
@@ -824,6 +842,115 @@ Page({
     this._recalcTimer = setTimeout(() => {
       this.recalculate();
     }, 80);
+    // 任何会触发重算的改动都值得落盘
+    this._schedulePersist();
+  },
+
+  // ===== 本地存储 =====
+
+  // 防抖写入，避免每次按键都写缓存
+  _schedulePersist() {
+    if (this._persistTimer) {
+      clearTimeout(this._persistTimer);
+    }
+    this._persistTimer = setTimeout(() => {
+      this._persistTimer = null;
+      this._persistNow();
+    }, 400);
+  },
+
+  // 立即写入当前输入
+  _persistNow() {
+    const payload = {
+      version: STORAGE_VERSION,
+      savedAt: Date.now(),
+      params: this.data.params,
+      currentMode: this.data.currentMode,
+      sections: this.data.sections,
+      currentPreset: this.data.currentPreset,
+    };
+    try {
+      wx.setStorageSync(STORAGE_KEY, payload);
+    } catch (err) {
+      // 存储空间不足或环境不支持时静默降级，不影响计算
+      console.warn('写入本地缓存失败：', err);
+    }
+  },
+
+  // 取消未执行的写入并立即落盘
+  _flushPersist() {
+    if (this._persistTimer) {
+      clearTimeout(this._persistTimer);
+      this._persistTimer = null;
+    }
+    this._persistNow();
+  },
+
+  // 启动时恢复上次输入
+  _restore() {
+    let saved = null;
+    try {
+      saved = wx.getStorageSync(STORAGE_KEY);
+    } catch (err) {
+      console.warn('读取本地缓存失败：', err);
+      return;
+    }
+    if (!saved || typeof saved !== 'object' || saved.version !== STORAGE_VERSION) return;
+
+    const defaults = this._getDefaults();
+    const patch = { params: this._sanitizeParams(saved.params, defaults) };
+
+    if (saved.currentMode === 'A' || saved.currentMode === 'B') {
+      patch.currentMode = saved.currentMode;
+    }
+    if (saved.sections && typeof saved.sections === 'object') {
+      const sections = {};
+      Object.keys(this.data.sections).forEach(key => {
+        const v = saved.sections[key];
+        sections[key] = (v === undefined) ? this.data.sections[key] : !!v;
+      });
+      patch.sections = sections;
+    }
+    if (typeof saved.currentPreset === 'string' && PRESETS[saved.currentPreset]) {
+      patch.currentPreset = saved.currentPreset;
+    }
+
+    // 等视图渲染完成后再计算，保证图表能拿到组件实例
+    this.setData(patch, () => {
+      this.recalculate();
+    });
+  },
+
+  // 校验并补全缓存里的参数，避免旧版本/脏数据影响页面
+  _sanitizeParams(raw, defaults) {
+    const result = { ...defaults };
+    if (!raw || typeof raw !== 'object') return result;
+
+    Object.keys(defaults).forEach(key => {
+      const value = raw[key];
+      if (value === undefined || value === null) return;
+
+      if (key === 'compareRates') {
+        if (typeof value === 'object') {
+          const rates = {};
+          Object.keys(value).forEach(rate => {
+            if (value[rate]) rates[rate] = true;
+          });
+          result.compareRates = rates;
+        }
+        return;
+      }
+
+      if (NUMERIC_FIELDS.indexOf(key) >= 0) {
+        const num = Number(value);
+        if (isFinite(num) && num >= 0) result[key] = num;
+        return;
+      }
+
+      if (typeof value === 'string') result[key] = value;
+    });
+
+    return result;
   },
 
   // 核心计算
@@ -1025,10 +1152,10 @@ Page({
       card2Label, card2Value, card2Color, card2Sub,
       card2BadgeShow, card2BadgeClass, card2BadgeText,
       freedom,
+    }, () => {
+      // 等 wx:if 内的 canvas 挂载完成再渲染，否则首次计算取不到组件
+      this._renderCharts(p, cf, lines);
     });
-
-    // 渲染图表
-    this._renderCharts(p, cf, lines);
   },
 
   // 构建财务自由指数的展示数据
@@ -1088,9 +1215,17 @@ Page({
   },
 
   // 统一图表渲染入口：实例只创建一次，之后仅更新配置
-  _updateChart(key, option) {
+  _updateChart(key, option, retried) {
     const comp = this.selectComponent('#' + key);
-    if (!comp) return;
+    if (!comp) {
+      // 首次渲染时组件可能尚未挂载，补一次延迟重试
+      if (!retried) {
+        setTimeout(() => {
+          this._updateChart(key, option, true);
+        }, 60);
+      }
+      return;
+    }
     if (!this._charts) this._charts = {};
     if (!this._chartIniting) this._chartIniting = {};
 

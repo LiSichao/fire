@@ -121,7 +121,9 @@ fire/
 
 ## Privacy and data handling
 
-The inspected calculation and page code contains no custom backend, `wx.request`, `wx.cloud`, or Mini Program storage API calls. User inputs are maintained in the page's in-memory state for calculation; the app does not implement a save/load feature for scenarios. Values may be lost when the page or session is reset.
+The calculation and page code contains no custom backend, `wx.request`, or `wx.cloud` calls. Inputs are saved on the device with `wx.setStorageSync` (key `fire_params`, schema version 1) and restored on launch, so a scenario survives closing and reopening the Mini Program. Nothing is uploaded to any server.
+
+The stored record holds the input values, the selected calculation mode, the section expand state, and the last applied preset. **Reset All** overwrites it with default values; clearing the Mini Program's storage or uninstalling the app removes it as well. Data does not sync across devices.
 
 This is a statement about the repository code reviewed, not a guarantee about data handling by WeChat or the device platform itself. Review WeChat's own privacy terms and your Mini Program configuration separately.
 
