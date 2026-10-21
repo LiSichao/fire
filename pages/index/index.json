@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "ec-canvas": "../../components/ec-canvas/ec-canvas"
+  },
+  "navigationBarTitleText": "FIRE 财务自由",
+  "backgroundColor": "#F9FAFB",
+  "enablePullDownRefresh": false
+}

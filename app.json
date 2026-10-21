@@ -1,0 +1,15 @@
+{
+  "pages": [
+    "pages/index/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#6366F1",
+    "navigationBarTitleText": "FIRE财务自由",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#FAFAFA"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

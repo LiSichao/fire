@@ -1,0 +1,484 @@
+/* app.wxss 全局样式 */
+page {
+  background-color: #FBFBFB;
+  color: #1F2937;
+  font-size: 28rpx;
+  line-height: 1.5;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+}
+
+view, text, button, input {
+  box-sizing: border-box;
+}
+
+.container {
+  min-height: 100vh;
+  padding: 24rpx;
+}
+
+/* 通用卡片样式 */
+.card {
+  background: #FFFFFF;
+  padding: 40rpx 44rpx;
+  border-radius: 24rpx;
+  border: 1rpx solid #E5E7EB;
+  margin-bottom: 28rpx;
+}
+.card-shadow {
+  background-color: #FFFFFF;
+  margin-bottom: 32rpx;
+  border-radius: 24rpx;
+  padding: 40rpx;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 36rpx;
+}
+.decorator {
+  width: 8rpx;
+  height: 32rpx;
+  background-color: #4F46E5;
+  border-radius: 4rpx;
+  margin-right: 16rpx;
+}
+.card-title-text {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #111827;
+}
+.card-label {
+  font-size: 25rpx;
+  color: #6B7280;
+  margin-bottom: 16rpx;
+  font-weight: 500;
+}
+
+.card-value {
+  font-size: 68rpx;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1rpx;
+}
+
+.card-value.green { color: #10B981; }
+.card-value.yellow { color: #F59E0B; }
+.card-value.red { color: #EF4444; }
+.card-value.indigo { color: #6366F1; }
+.card-value.gray { color: #6B7280; }
+
+.card-sub {
+  font-size: 26rpx;
+  color: #4B5563;
+  margin-top: 8rpx;
+  min-height: 36rpx;
+  line-height: 1.6;
+}
+
+/* 等级徽章 */
+.level-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx 20rpx;
+  border-radius: 999rpx;
+  font-size: 25rpx;
+  font-weight: 700;
+  margin: 20rpx 0 8rpx;
+  line-height: 1.35;
+}
+
+.level-green { background: #DCFCE7; color: #15803D; }
+.level-yellow { background: #FEF3C7; color: #B45309; }
+.level-orange { background: #FFEDD5; color: #C2410C; }
+.level-red { background: #FEE2E2; color: #B91C1C; }
+.level-gray { background: #F3F4F6; color: #4B5563; }
+
+/* 输入框样式 */
+.field {
+  margin-bottom: 20rpx;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.field-label {
+  font-size: 23rpx;
+  color: #6B7280;
+  margin-bottom: 8rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.field-input {
+  width: 100%;
+  padding: 14rpx 20rpx;
+  border: 1rpx solid #E5E7EB;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+  background: #FFFFFF;
+  color: #1F2937;
+  height: 72rpx;
+  line-height: 72rpx; 
+}
+
+.field-input:focus {
+  border-color: #6366F1;
+}
+
+/* 折叠面板 */
+.section {
+  margin-bottom: 28rpx;
+  border: 1rpx solid #F3F4F6;
+  border-radius: 20rpx;
+  background: #FFFFFF;
+  overflow: hidden;
+}
+
+.section-header {
+  font-size: 26rpx;
+  font-weight: 600;
+  padding: 24rpx 28rpx;
+  color: #374151;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #F3F4F6;
+}
+
+.section-header .arrow {
+  font-size: 20rpx;
+  color: #9CA3AF;
+  transition: transform 0.2s;
+}
+
+.section.collapsed .arrow {
+  transform: rotate(-90deg);
+}
+
+.section-body {
+  padding: 24rpx 28rpx 28rpx;
+}
+
+.section.collapsed .section-body {
+  display: none;
+}
+
+/* 按钮样式 */
+.btn-primary {
+  background: #6366F1;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  padding: 20rpx;
+}
+
+.btn-primary::after {
+  border: none;
+}
+
+.btn-secondary {
+  background: #FFFFFF;
+  color: #6366F1;
+  border: 1rpx solid #6366F1;
+  border-radius: 12rpx;
+  font-size: 25rpx;
+  font-weight: 500;
+  padding: 20rpx;
+}
+
+.btn-secondary::after {
+  border: none;
+}
+
+/* 预设按钮 */
+.presets {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  overflow-x: auto;
+  margin-bottom: 32rpx;
+  white-space: nowrap;
+}
+
+.preset-btn {
+  flex-shrink: 0;
+  padding: 16rpx 24rpx;
+  background: #FFFFFF;
+  border: 1rpx solid #E5E7EB;
+  border-radius: 16rpx;
+  font-size: 25rpx;
+  color: #374151;
+  text-align: left;
+  font-weight: 500;
+  margin-bottom: 8rpx;
+}
+
+.preset-btn.active {
+  border-color: #6366F1;
+  background: #EEF2FF;
+  color: #6366F1;
+}
+
+.preset-label {
+  font-size: 22rpx;
+  color: #6B7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1rpx;
+  margin-bottom: 8rpx;
+}
+
+/* 模式切换标签 */
+.mode-tabs {
+  display: flex;
+  background: #F3F4F6;
+  border-radius: 16rpx;
+  padding: 6rpx;
+  margin-bottom: 28rpx;
+}
+
+.mode-tab {
+  flex: 1;
+  padding: 16rpx;
+  background: transparent;
+  border: 0;
+  font-size: 25rpx;
+  font-weight: 500;
+  border-radius: 10rpx;
+  color: #6B7280;
+  text-align: center;
+}
+
+.mode-tab.active {
+  background: #FFFFFF;
+  color: #6366F1;
+  box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.06);
+}
+
+.mode-tab-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  display: block;
+}
+
+.mode-tab-sub {
+  font-size: 21rpx;
+  color: #9CA3AF;
+  font-weight: 400;
+  display: block;
+  margin-top: 4rpx;
+}
+
+.mode-tab.active .mode-tab-sub {
+  color: #6366F1;
+  opacity: 0.85;
+}
+
+/* 滑块 */
+.slider-block {
+  margin-bottom: 28rpx;
+}
+
+.slider-value {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #6366F1;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  margin: 4rpx 0 16rpx;
+}
+
+/* 对比收益率复选框 */
+.compare-rates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.compare-rate-item {
+  font-size: 24rpx;
+  padding: 10rpx 20rpx;
+  background: #FFFFFF;
+  border: 1rpx solid #E5E7EB;
+  border-radius: 12rpx;
+  display: inline-flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.compare-rate-item.checked {
+  background: #EEF2FF;
+  border-color: #6366F1;
+  color: #6366F1;
+  font-weight: 500;
+}
+
+/* 图表容器 */
+.charts {
+  display: flex;
+  flex-direction: column;
+  gap: 28rpx;
+}
+
+.chart-container {
+  background: #FFFFFF;
+  padding: 36rpx 40rpx;
+  border-radius: 24rpx;
+  border: 1rpx solid #E5E7EB;
+}
+
+.chart-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 24rpx;
+}
+
+.chart-canvas {
+  width: 100%;
+  height: 560rpx;
+}
+
+.chart-canvas.tall {
+  height: 720rpx;
+}
+
+/* 结果卡片网格 */
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 28rpx;
+  margin-bottom: 40rpx;
+}
+
+/* 操作按钮区域 */
+.actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 40rpx;
+  margin-bottom: 32rpx;
+  padding-top: 32rpx;
+  border-top: 1rpx solid #EEF0F3;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 20rpx;
+  background: #FFFFFF;
+  color: #6366F1;
+  border: 1rpx solid #6366F1;
+  border-radius: 12rpx;
+  font-size: 25rpx;
+  font-weight: 500;
+  text-align: center;
+}
+
+.action-btn.primary {
+  background: #6366F1;
+  color: white;
+}
+
+/* 自定义行 */
+.custom-row {
+  display: flex;
+  gap: 12rpx;
+}
+
+.custom-row .field {
+  flex: 1;
+}
+
+.custom-row .field:first-child {
+  flex: 1.2;
+}
+
+/* 标题区域 */
+.main-header {
+  margin-bottom: 36rpx;
+}
+
+.main-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1F2937;
+  margin-bottom: 8rpx;
+}
+
+.main-timeline {
+  font-size: 26rpx;
+  color: #6B7280;
+}
+
+/* 提示图标 */
+.info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 50%;
+  background: #E5E7EB;
+  color: #6B7280;
+  font-size: 18rpx;
+  font-weight: 700;
+  font-family: serif;
+}
+
+/* 页头 */
+.page-header {
+  margin-left: -24rpx;
+  margin-right: -24rpx;
+  margin-top: -24rpx;
+  background: linear-gradient(135deg, #4F46E5, #3730A3);
+  padding: 50rpx 40rpx 70rpx 40rpx;
+  color: #FFFFFF;
+}
+
+.page-title {
+  font-size: 46rpx;
+  font-weight: 800;
+  display: block;
+  letter-spacing: 2rpx;
+}
+
+.page-subtitle {
+  font-size: 24rpx;
+  opacity: 0.8;
+  display: block;
+  margin-top: 10rpx;
+}
+
+/* 隐私提示条 */
+.privacy-banner {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+  border-bottom: 1rpx solid #A7F3D0;
+  padding: 24rpx;
+  font-size: 28rpx;
+  color: #065F46;
+  line-height: 1.5;
+  margin: -24rpx -24rpx 24rpx;
+}
+
+.privacy-banner-icon {
+  font-size: 36rpx;
+  flex-shrink: 0;
+}
+
+.privacy-banner-text {
+  flex: 1;
+  font-size: 26rpx;
+}
+
+.privacy-banner-text strong {
+  font-weight: 700;
+}
