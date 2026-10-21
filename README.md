@@ -166,4 +166,4 @@ Project-owned code in this repository is licensed under the [MIT License](LICENS
 
 ## Third-party notices
 
-The repository includes a bundled ECharts runtime under `components/ec-canvas/echarts.js`, which carries Apache License 2.0 notice text. Preserve its applicable license and copyright notices when changing or redistributing that bundle.
+The repository includes a custom Apache ECharts 6.1.0 build under `components/ec-canvas/echarts.js`, licensed under Apache License 2.0. The bundle contains only the modules this project uses: `BarChart`, `LineChart`, `GridComponent`, `TooltipComponent`, `LegendComponent`, and `CanvasRenderer`. It was produced with esbuild from the npm package; to regenerate it, bundle those modules from `echarts/core` and re-export `init`, `setPlatformAPI`, `registerPreprocessor`, `use`, and `version`. Preserve the license header when changing or redistributing the bundle.

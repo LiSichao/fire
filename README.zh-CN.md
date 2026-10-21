@@ -166,4 +166,4 @@ fire/
 
 ## 第三方声明
 
-仓库在 `components/ec-canvas/echarts.js` 中包含 ECharts 运行时文件，该文件带有 Apache License 2.0 相关声明。修改或再分发该组件时，请保留其适用的许可证与版权声明。
+仓库在 `components/ec-canvas/echarts.js` 中包含一份 Apache ECharts 6.1.0 的定制构建，遵循 Apache License 2.0。该构建只包含本项目用到的模块：`BarChart`、`LineChart`、`GridComponent`、`TooltipComponent`、`LegendComponent` 和 `CanvasRenderer`，由 esbuild 基于 npm 包打包生成；如需重新构建，从 `echarts/core` 打包上述模块，并导出 `init`、`setPlatformAPI`、`registerPreprocessor`、`use`、`version`。修改或再分发该组件时，请保留文件头的许可证与版权声明。
