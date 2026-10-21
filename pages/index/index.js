@@ -25,21 +25,59 @@ const CURRENT_YEAR = new Date().getFullYear();
 const STORAGE_KEY = 'fire_params';
 const STORAGE_VERSION = 1;
 
-// 数值型参数（输入解析与缓存校验共用）
-const NUMERIC_FIELDS = [
-  'startAge', 'endAge', 'initial', 'target', 'mainRate',
-  'incomeStart', 'growthRate', 'growthYears', 'inflationRate',
-  'utilities', 'charging', 'parking', 'broadband',
-  'dailyPerPerson', 'dailyPersons',
-  'filial', 'travelPerPerson', 'travelPersons',
-  'carMonthly', 'carStartYear', 'carEndYear', 'carEndMonth',
-  'mortgageMonthly', 'mortgageStartYear', 'mortgageEndYear', 'mortgageEndMonth',
-  'rent', 'propertyFee',
-  'petMonthly', 'education', 'insurance',
-  'custom1Amount', 'custom2Amount',
-  'housingFundMonthly', 'housingFundUsableRate',
-  'socialSecurityMonthly', 'socialToRetirementRate',
-];
+// 数值型字段的位数上限：int = 整数位，dec = 小数位
+// 只限制位数，不做数值裁剪（例如年龄 0-99、金额最多 4 位整数）
+const FIELD_LIMITS = {
+  // 基础
+  startAge: { int: 2, dec: 0 },
+  endAge: { int: 2, dec: 0 },
+  initial: { int: 4, dec: 2 },
+  target: { int: 4, dec: 2 },
+  mainRate: { int: 2, dec: 2 },
+  // 收入 / 通胀
+  incomeStart: { int: 4, dec: 2 },
+  growthRate: { int: 2, dec: 2 },
+  growthYears: { int: 2, dec: 0 },
+  inflationRate: { int: 2, dec: 2 },
+  // A 固定开销（元）
+  utilities: { int: 4, dec: 2 },
+  charging: { int: 4, dec: 2 },
+  parking: { int: 4, dec: 2 },
+  broadband: { int: 5, dec: 2 },
+  // B 日常开销
+  dailyPerPerson: { int: 5, dec: 2 },
+  dailyPersons: { int: 2, dec: 0 },
+  // C 年度大项（万元）
+  filial: { int: 3, dec: 2 },
+  travelPerPerson: { int: 3, dec: 2 },
+  travelPersons: { int: 2, dec: 0 },
+  // D 车贷
+  carMonthly: { int: 5, dec: 2 },
+  carStartYear: { int: 4, dec: 0 },
+  carEndYear: { int: 4, dec: 0 },
+  carEndMonth: { int: 2, dec: 0 },
+  // E 住房
+  mortgageMonthly: { int: 5, dec: 2 },
+  mortgageStartYear: { int: 4, dec: 0 },
+  mortgageEndYear: { int: 4, dec: 0 },
+  mortgageEndMonth: { int: 2, dec: 0 },
+  rent: { int: 5, dec: 2 },
+  propertyFee: { int: 4, dec: 2 },
+  // F 其他
+  petMonthly: { int: 4, dec: 2 },
+  education: { int: 3, dec: 2 },
+  insurance: { int: 3, dec: 2 },
+  // G 自定义
+  custom1Amount: { int: 5, dec: 2 },
+  custom2Amount: { int: 5, dec: 2 },
+  // H 社保 / 公积金
+  housingFundMonthly: { int: 5, dec: 2 },
+  housingFundUsableRate: { int: 3, dec: 2 },
+  socialSecurityMonthly: { int: 5, dec: 2 },
+  socialToRetirementRate: { int: 3, dec: 2 },
+};
+
+const NUMERIC_FIELDS = Object.keys(FIELD_LIMITS);
 
 // 同龄人分布数据
 const PEER_DISTRIBUTION = {
@@ -180,6 +218,21 @@ function normalizeRate(value) {
   const n = Number(value);
   if (!isFinite(n)) return 0;
   return Math.round(n * 100) / 100;
+}
+
+// 输入框文本清洗：按字段的位数上限截断，保留 "1." 这类中间态
+function sanitizeDecimalInput(raw, field) {
+  const limit = FIELD_LIMITS[field] || { int: 6, dec: 2 };
+  let s = String(raw == null ? '' : raw).replace(/[^\d.]/g, '');
+  const firstDot = s.indexOf('.');
+  if (firstDot >= 0) {
+    s = s.slice(0, firstDot + 1) + s.slice(firstDot + 1).replace(/\./g, '');
+  }
+  const match = /^(\d*)(?:\.(\d*))?$/.exec(s);
+  if (!match) return '';
+  const intPart = match[1].slice(0, limit.int);
+  if (limit.dec === 0 || match[2] === undefined) return intPart;
+  return intPart + '.' + match[2].slice(0, limit.dec);
 }
 
 // 格式化金额（万元）
@@ -504,6 +557,9 @@ Page({
 
     // 滑块实时显示值：拖动时更新，松手才写入 params 并重算
     rateDisplay: 0,
+
+    // 数字输入框的原始文本（保留 "1." 等中间态，避免输入被改写）
+    inputText: {},
     
     // 折叠面板状态
     sections: {
@@ -621,7 +677,10 @@ Page({
       key: p.key,
       label: p.label,
     }));
-    this.setData({ presets: presetList });
+    this.setData({
+      presets: presetList,
+      inputText: this._buildInputText(this.data.params),
+    });
     
     // 防抖定时器
     this._recalcTimer = null;
@@ -672,20 +731,36 @@ Page({
   // 输入处理
   onInput(e) {
     const field = e.currentTarget.dataset.field;
-    let value = e.detail.value;
+    const raw = e.detail.value;
+    const patch = { currentPreset: '' };
 
-    // 数字字段转换
     if (NUMERIC_FIELDS.indexOf(field) >= 0) {
-      value = parseFloat(value) || 0;
-      if (value < 0) value = 0;
+      // 输入框保留用户原文（含 "1." 这类中间态），参数只取解析后的数字
+      const text = sanitizeDecimalInput(raw, field);
+      const num = parseFloat(text);
+      patch[`inputText.${field}`] = text;
+      patch[`params.${field}`] = (isFinite(num) && num >= 0) ? num : 0;
+    } else {
+      patch[`params.${field}`] = raw;
     }
 
-    this.setData({
-      [`params.${field}`]: value,
-      currentPreset: '',
-    });
-
+    this.setData(patch);
     this._debounceRecalc();
+  },
+
+  // 失焦时把 "1." / "" 这类中间态收敛成合法数字
+  onInputBlur(e) {
+    const field = e.currentTarget.dataset.field;
+    if (NUMERIC_FIELDS.indexOf(field) < 0) return;
+    const text = this.data.inputText[field];
+    if (text === undefined) return;
+    if (text !== '' && !/\.$/.test(text)) return;
+    const num = parseFloat(text);
+    const normalized = isFinite(num) ? String(num) : '0';
+    this.setData({
+      [`inputText.${field}`]: normalized,
+      [`params.${field}`]: isFinite(num) ? num : 0,
+    });
   },
 
   // 拖动过程中：只更新数字，避免高频重算与图表重绘
@@ -766,6 +841,7 @@ Page({
       currentPreset: key,
       currentMode: 'A',
       rateDisplay: normalizeRate(newParams.mainRate),
+      inputText: this._buildInputText(newParams),
       sections: {
         base: true,
         income: true,
@@ -798,6 +874,7 @@ Page({
       currentPreset: '',
       currentMode: 'A',
       rateDisplay: normalizeRate(defaults.mainRate),
+      inputText: this._buildInputText(defaults),
       sections: {
         base: true,
         income: true,
@@ -868,6 +945,16 @@ Page({
     };
   },
 
+  // 由参数生成输入框文本（预设/重置/恢复时同步）
+  _buildInputText(params) {
+    const text = {};
+    NUMERIC_FIELDS.forEach(key => {
+      const value = params[key];
+      text[key] = (value === undefined || value === null) ? '' : String(value);
+    });
+    return text;
+  },
+
   // 防抖重新计算
   _debounceRecalc() {
     if (this._recalcTimer) {
@@ -934,6 +1021,7 @@ Page({
     const defaults = this._getDefaults();
     const patch = { params: this._sanitizeParams(saved.params, defaults) };
     patch.rateDisplay = normalizeRate(patch.params.mainRate);
+    patch.inputText = this._buildInputText(patch.params);
 
     if (saved.currentMode === 'A' || saved.currentMode === 'B') {
       patch.currentMode = saved.currentMode;

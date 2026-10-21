@@ -47,8 +47,8 @@
           <input 
             class="field-input" 
             type="digit" 
-            value="{{params.target}}" 
-            bindinput="onInput"
+            value="{{inputText.target}}" 
+            bindinput="onInput" bindblur="onInputBlur"
             data-field="target"
             placeholder="0"
           />
@@ -103,8 +103,8 @@
         <input 
           class="field-input" 
           type="number" 
-          value="{{params.startAge}}" 
-          bindinput="onInput"
+          value="{{inputText.startAge}}" 
+          bindinput="onInput" bindblur="onInputBlur"
           data-field="startAge"
         />
       </view>
@@ -113,8 +113,8 @@
         <input 
           class="field-input" 
           type="number" 
-          value="{{params.endAge}}" 
-          bindinput="onInput"
+          value="{{inputText.endAge}}" 
+          bindinput="onInput" bindblur="onInputBlur"
           data-field="endAge"
         />
       </view>
@@ -123,8 +123,8 @@
         <input 
           class="field-input" 
           type="digit" 
-          value="{{params.initial}}" 
-          bindinput="onInput"
+          value="{{inputText.initial}}" 
+          bindinput="onInput" bindblur="onInputBlur"
           data-field="initial"
         />
       </view>
@@ -143,8 +143,8 @@
         <input 
           class="field-input" 
           type="digit" 
-          value="{{params.incomeStart}}" 
-          bindinput="onInput"
+          value="{{inputText.incomeStart}}" 
+          bindinput="onInput" bindblur="onInputBlur"
           data-field="incomeStart"
         />
       </view>
@@ -153,8 +153,8 @@
         <input 
           class="field-input" 
           type="digit" 
-          value="{{params.growthRate}}" 
-          bindinput="onInput"
+          value="{{inputText.growthRate}}" 
+          bindinput="onInput" bindblur="onInputBlur"
           data-field="growthRate"
         />
       </view>
@@ -163,8 +163,8 @@
         <input 
           class="field-input" 
           type="number" 
-          value="{{params.growthYears}}" 
-          bindinput="onInput"
+          value="{{inputText.growthYears}}" 
+          bindinput="onInput" bindblur="onInputBlur"
           data-field="growthYears"
         />
       </view>
@@ -183,8 +183,8 @@
         <input 
           class="field-input" 
           type="digit" 
-          value="{{params.inflationRate}}" 
-          bindinput="onInput"
+          value="{{inputText.inflationRate}}" 
+          bindinput="onInput" bindblur="onInputBlur"
           data-field="inflationRate"
         />
       </view>
@@ -200,19 +200,19 @@
     <view class="section-body">
       <view class="field">
         <view class="field-label">水电费 (元/月)</view>
-        <input class="field-input" type="digit" value="{{params.utilities}}" bindinput="onInput" data-field="utilities" />
+        <input class="field-input" type="digit" value="{{inputText.utilities}}" bindinput="onInput" bindblur="onInputBlur" data-field="utilities" />
       </view>
       <view class="field">
         <view class="field-label">充电/燃油 (元/月)</view>
-        <input class="field-input" type="digit" value="{{params.charging}}" bindinput="onInput" data-field="charging" />
+        <input class="field-input" type="digit" value="{{inputText.charging}}" bindinput="onInput" bindblur="onInputBlur" data-field="charging" />
       </view>
       <view class="field">
         <view class="field-label">停车费 (元/月)</view>
-        <input class="field-input" type="digit" value="{{params.parking}}" bindinput="onInput" data-field="parking" />
+        <input class="field-input" type="digit" value="{{inputText.parking}}" bindinput="onInput" bindblur="onInputBlur" data-field="parking" />
       </view>
       <view class="field">
         <view class="field-label">宽带 + 通讯 (元/年)</view>
-        <input class="field-input" type="digit" value="{{params.broadband}}" bindinput="onInput" data-field="broadband" />
+        <input class="field-input" type="digit" value="{{inputText.broadband}}" bindinput="onInput" bindblur="onInputBlur" data-field="broadband" />
       </view>
     </view>
   </view>
@@ -226,11 +226,11 @@
     <view class="section-body">
       <view class="field">
         <view class="field-label">每人每月 (元)</view>
-        <input class="field-input" type="digit" value="{{params.dailyPerPerson}}" bindinput="onInput" data-field="dailyPerPerson" />
+        <input class="field-input" type="digit" value="{{inputText.dailyPerPerson}}" bindinput="onInput" bindblur="onInputBlur" data-field="dailyPerPerson" />
       </view>
       <view class="field">
         <view class="field-label">人数</view>
-        <input class="field-input" type="number" value="{{params.dailyPersons}}" bindinput="onInput" data-field="dailyPersons" />
+        <input class="field-input" type="number" value="{{inputText.dailyPersons}}" bindinput="onInput" bindblur="onInputBlur" data-field="dailyPersons" />
       </view>
     </view>
   </view>
@@ -244,15 +244,15 @@
     <view class="section-body">
       <view class="field">
         <view class="field-label">孝亲费 (万元/年)</view>
-        <input class="field-input" type="digit" value="{{params.filial}}" bindinput="onInput" data-field="filial" />
+        <input class="field-input" type="digit" value="{{inputText.filial}}" bindinput="onInput" bindblur="onInputBlur" data-field="filial" />
       </view>
       <view class="field">
         <view class="field-label">旅游 (万元/人/年)</view>
-        <input class="field-input" type="digit" value="{{params.travelPerPerson}}" bindinput="onInput" data-field="travelPerPerson" />
+        <input class="field-input" type="digit" value="{{inputText.travelPerPerson}}" bindinput="onInput" bindblur="onInputBlur" data-field="travelPerPerson" />
       </view>
       <view class="field">
         <view class="field-label">旅游人数</view>
-        <input class="field-input" type="number" value="{{params.travelPersons}}" bindinput="onInput" data-field="travelPersons" />
+        <input class="field-input" type="number" value="{{inputText.travelPersons}}" bindinput="onInput" bindblur="onInputBlur" data-field="travelPersons" />
       </view>
     </view>
   </view>
@@ -266,19 +266,19 @@
     <view class="section-body">
       <view class="field">
         <view class="field-label">月供 (元)</view>
-        <input class="field-input" type="digit" value="{{params.carMonthly}}" bindinput="onInput" data-field="carMonthly" />
+        <input class="field-input" type="digit" value="{{inputText.carMonthly}}" bindinput="onInput" bindblur="onInputBlur" data-field="carMonthly" />
       </view>
       <view class="field">
         <view class="field-label">起始年份</view>
-        <input class="field-input" type="number" value="{{params.carStartYear}}" bindinput="onInput" data-field="carStartYear" />
+        <input class="field-input" type="number" value="{{inputText.carStartYear}}" bindinput="onInput" bindblur="onInputBlur" data-field="carStartYear" />
       </view>
       <view class="field">
         <view class="field-label">结束年</view>
-        <input class="field-input" type="number" value="{{params.carEndYear}}" bindinput="onInput" data-field="carEndYear" />
+        <input class="field-input" type="number" value="{{inputText.carEndYear}}" bindinput="onInput" bindblur="onInputBlur" data-field="carEndYear" />
       </view>
       <view class="field">
         <view class="field-label">结束月份</view>
-        <input class="field-input" type="number" value="{{params.carEndMonth}}" bindinput="onInput" data-field="carEndMonth" />
+        <input class="field-input" type="number" value="{{inputText.carEndMonth}}" bindinput="onInput" bindblur="onInputBlur" data-field="carEndMonth" />
       </view>
     </view>
   </view>
@@ -292,27 +292,27 @@
     <view class="section-body">
       <view class="field">
         <view class="field-label">房贷月供 (元/月)</view>
-        <input class="field-input" type="digit" value="{{params.mortgageMonthly}}" bindinput="onInput" data-field="mortgageMonthly" />
+        <input class="field-input" type="digit" value="{{inputText.mortgageMonthly}}" bindinput="onInput" bindblur="onInputBlur" data-field="mortgageMonthly" />
       </view>
       <view class="field">
         <view class="field-label">房贷起始年份</view>
-        <input class="field-input" type="number" value="{{params.mortgageStartYear}}" bindinput="onInput" data-field="mortgageStartYear" />
+        <input class="field-input" type="number" value="{{inputText.mortgageStartYear}}" bindinput="onInput" bindblur="onInputBlur" data-field="mortgageStartYear" />
       </view>
       <view class="field">
         <view class="field-label">房贷结束年</view>
-        <input class="field-input" type="number" value="{{params.mortgageEndYear}}" bindinput="onInput" data-field="mortgageEndYear" />
+        <input class="field-input" type="number" value="{{inputText.mortgageEndYear}}" bindinput="onInput" bindblur="onInputBlur" data-field="mortgageEndYear" />
       </view>
       <view class="field">
         <view class="field-label">房贷结束月份</view>
-        <input class="field-input" type="number" value="{{params.mortgageEndMonth}}" bindinput="onInput" data-field="mortgageEndMonth" />
+        <input class="field-input" type="number" value="{{inputText.mortgageEndMonth}}" bindinput="onInput" bindblur="onInputBlur" data-field="mortgageEndMonth" />
       </view>
       <view class="field">
         <view class="field-label">房租 (元/月)</view>
-        <input class="field-input" type="digit" value="{{params.rent}}" bindinput="onInput" data-field="rent" />
+        <input class="field-input" type="digit" value="{{inputText.rent}}" bindinput="onInput" bindblur="onInputBlur" data-field="rent" />
       </view>
       <view class="field">
         <view class="field-label">物业费 (元/月)</view>
-        <input class="field-input" type="digit" value="{{params.propertyFee}}" bindinput="onInput" data-field="propertyFee" />
+        <input class="field-input" type="digit" value="{{inputText.propertyFee}}" bindinput="onInput" bindblur="onInputBlur" data-field="propertyFee" />
       </view>
     </view>
   </view>
@@ -326,15 +326,15 @@
     <view class="section-body">
       <view class="field">
         <view class="field-label">宠物 (元/月)</view>
-        <input class="field-input" type="digit" value="{{params.petMonthly}}" bindinput="onInput" data-field="petMonthly" />
+        <input class="field-input" type="digit" value="{{inputText.petMonthly}}" bindinput="onInput" bindblur="onInputBlur" data-field="petMonthly" />
       </view>
       <view class="field">
         <view class="field-label">子女教育 (万元/年)</view>
-        <input class="field-input" type="digit" value="{{params.education}}" bindinput="onInput" data-field="education" />
+        <input class="field-input" type="digit" value="{{inputText.education}}" bindinput="onInput" bindblur="onInputBlur" data-field="education" />
       </view>
       <view class="field">
         <view class="field-label">商业保险/医疗 (万元/年)</view>
-        <input class="field-input" type="digit" value="{{params.insurance}}" bindinput="onInput" data-field="insurance" />
+        <input class="field-input" type="digit" value="{{inputText.insurance}}" bindinput="onInput" bindblur="onInputBlur" data-field="insurance" />
       </view>
     </view>
   </view>
@@ -350,14 +350,14 @@
         <view class="field-label">科目 1</view>
         <view class="custom-row">
           <input class="field-input" type="text" value="{{params.custom1Name}}" bindinput="onInput" data-field="custom1Name" placeholder="名称（如 健身房）" />
-          <input class="field-input" type="digit" value="{{params.custom1Amount}}" bindinput="onInput" data-field="custom1Amount" placeholder="元/月" />
+          <input class="field-input" type="digit" value="{{inputText.custom1Amount}}" bindinput="onInput" bindblur="onInputBlur" data-field="custom1Amount" placeholder="元/月" />
         </view>
       </view>
       <view class="field">
         <view class="field-label">科目 2</view>
         <view class="custom-row">
           <input class="field-input" type="text" value="{{params.custom2Name}}" bindinput="onInput" data-field="custom2Name" placeholder="名称（如 兴趣班）" />
-          <input class="field-input" type="digit" value="{{params.custom2Amount}}" bindinput="onInput" data-field="custom2Amount" placeholder="元/月" />
+          <input class="field-input" type="digit" value="{{inputText.custom2Amount}}" bindinput="onInput" bindblur="onInputBlur" data-field="custom2Amount" placeholder="元/月" />
         </view>
       </view>
     </view>
@@ -372,19 +372,19 @@
     <view class="section-body">
       <view class="field">
         <view class="field-label">公积金月缴（个人+公司合计，元/月）</view>
-        <input class="field-input" type="digit" value="{{params.housingFundMonthly}}" bindinput="onInput" data-field="housingFundMonthly" />
+        <input class="field-input" type="digit" value="{{inputText.housingFundMonthly}}" bindinput="onInput" bindblur="onInputBlur" data-field="housingFundMonthly" />
       </view>
       <view class="field">
         <view class="field-label">社保月缴（个人部分，元/月）</view>
-        <input class="field-input" type="digit" value="{{params.socialSecurityMonthly}}" bindinput="onInput" data-field="socialSecurityMonthly" />
+        <input class="field-input" type="digit" value="{{inputText.socialSecurityMonthly}}" bindinput="onInput" bindblur="onInputBlur" data-field="socialSecurityMonthly" />
       </view>
       <view class="field">
         <view class="field-label">公积金可用比例 (%)</view>
-        <input class="field-input" type="digit" value="{{params.housingFundUsableRate}}" bindinput="onInput" data-field="housingFundUsableRate" />
+        <input class="field-input" type="digit" value="{{inputText.housingFundUsableRate}}" bindinput="onInput" bindblur="onInputBlur" data-field="housingFundUsableRate" />
       </view>
       <view class="field">
         <view class="field-label">社保转养老金可计入比例 (%)</view>
-        <input class="field-input" type="digit" value="{{params.socialToRetirementRate}}" bindinput="onInput" data-field="socialToRetirementRate" />
+        <input class="field-input" type="digit" value="{{inputText.socialToRetirementRate}}" bindinput="onInput" bindblur="onInputBlur" data-field="socialToRetirementRate" />
       </view>
     </view>
   </view>
