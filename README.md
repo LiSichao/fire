@@ -1,121 +1,164 @@
-# 财务自由进度条 · 微信小程序版
+# FIRE — Financial Independence, Retire Early Planner
 
-30 秒看清你的人生现金流，纯前端计算，无后台、不收集数据。
+**Explore your path to financial freedom.** FIRE (Financial Independence, Retire Early) is a client-side WeChat Mini Program for modeling income, expenses, savings, inflation, and investment-return scenarios.
 
-## 功能说明
+[简体中文](README.zh-CN.md) · [Calculation model](docs/calculation-model.md) · [Contributing](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Security policy](SECURITY.md) · [Support](SUPPORT.md) · [Repository setup](GITHUB_REPOSITORY_SETUP.md)
 
-- **双计算模式**
-  - 模式A：推算收益率 — 输入目标存款，反推需要的年化收益率
-  - 模式B：推算最终存款 — 输入预期收益率，计算N年后的存款总额
-- **详细参数面板（8大分区，可折叠）**
-  - 基础参数：起始年龄、目标年龄、初始本金
-  - 收入参数：起始年收入、年增长率、增长持续年数
-  - 通胀参数：年通胀率
-  - A段：刚性固定支出（水电、燃油、停车、宽带）
-  - B段：日常开销
-  - C段：年度大项（孝亲费、旅游）
-  - D段：车贷
-  - E段：住房支出（房贷、房租、物业费）
-  - F段：其他常见支出（宠物、教育、保险）
-  - G段：自定义科目（2个）
-  - H段：社保/公积金
-- **10个预设场景**：应届生、初入职场、DINK、备孕、有娃、房贷、中年转型、双娃、高管、临退休
-- **4个数据图表**（ECharts）
-  - 收入 vs 支出（年度对比柱状图）
-  - 支出结构（按类堆叠柱状图）
-  - 存款累积曲线（核心折线图，支持多收益率对比）
-  - 年度结余分解
-- **财务自由指数**：5维度评分（储蓄率、可行性、成长性、支出健康度、目标合理性）
-- **同龄人对比**：基于正态分布的百分位估算
-- **多收益率对比**：模式B支持同时对比3%、5%、7%、10%、12%
-- **实时计算**：输入防抖80ms，即时出结果
-- **全部重置**：一键恢复默认值
+> **Important:** FIRE is an educational planning tool, not a financial product, investment recommendation, tax calculator, pension calculator, or guarantee of future results. Its outputs depend on user-entered assumptions and simplified annual calculations.
 
+## Overview
 
-## 项目结构
+FIRE helps users turn a long-term financial goal into an editable annual cash-flow scenario. Set an age range, starting assets, income trajectory, inflation, housing and lifestyle costs, loan periods, and selected housing-fund/social-security assumptions. The app recalculates locally and visualizes how different annual return assumptions affect the projected balance.
 
+### Features
+
+- **Two calculation modes**
+  - **Solve for return:** enter a target balance and estimate the annual return required under the current cash-flow assumptions.
+  - **Project a balance:** choose an annual return and estimate the balance at the target age.
+- **Editable annual cash-flow model:** income growth, inflation, household spending, annual expenses, car loans, mortgages, rent, and property fees.
+- **Eight expense groups (A–H), plus planning inputs:** basic assumptions, income, inflation, fixed costs, daily spending, annual items, loans, housing, other costs, custom categories, and optional housing-fund/social-security offsets.
+- **Ten presets:** example scenarios for an early-career worker, a young professional saving for a down payment, a DINK household, family planning, parents with children, a mortgage-heavy household, mid-career transition, a two-child household, a senior executive, and pre-retirement planning.
+- **Four charts:** annual income versus expenses, expense composition, projected balance under one or more return assumptions, and annual surplus breakdown.
+- **Return comparisons:** compare the primary assumption with selectable 3%, 5%, 7%, 10%, and 12% annual-return scenarios.
+- **A heuristic 0–100 planning score:** savings rate, target feasibility, income-growth assumptions, expense profile, and target size are summarized, with a model-based age-band percentile estimate.
+- **Fast feedback:** input changes are debounced before recalculation; no server is needed for the core calculation.
+
+The presets and score are convenience features, not evidence that any particular target or return is achievable.
+
+## Quick start
+
+### Requirements
+
+- [WeChat DevTools](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html)
+- A WeChat Mini Program AppID, or an available test-app option in DevTools
+- The repository source code
+
+The repository config currently sets the Mini Program base-library version to `3.17.0` and leaves the AppID empty in `project.config.json`. Use the AppID and developer configuration appropriate for your own environment.
+
+### Run locally
+
+1. Clone or download this repository:
+
+   ```bash
+   git clone https://github.com/LiSichao/fire.git
+   cd fire
+   ```
+
+2. Open WeChat DevTools.
+3. Choose **Import Project** and select the repository root—the directory containing `app.json` and `project.config.json`.
+4. Configure your AppID in DevTools if required by your environment.
+5. Compile and run the Mini Program in the simulator. Verify behavior on a real device before relying on platform-specific rendering or touch interactions.
+
+The current source tree does not include a `package.json`, a Node-based build script, or a separate backend service. The chart bundle is included under `components/ec-canvas/`; no separate service needs to be started for the current implementation.
+
+## How to use it
+
+1. **Start with a preset** to see a complete sample scenario, or enter your own assumptions.
+2. **Set the time horizon** by entering a starting age and a target age greater than the starting age.
+3. **Enter income and expenses.** Pay attention to the unit labels: some fields are monthly yuan, while others are ten-thousand yuan per year.
+4. **Choose a calculation mode.** In return-solving mode, set a target balance. In balance-projection mode, choose the main annual return and optionally enable comparison rates.
+5. **Review both headline cards and all four charts.** A plausible-looking chart is not proof that the assumptions are realistic.
+6. **Change one assumption at a time** to compare scenarios. Use **Reset All** to restore the default input values.
+
+For definitions, formulas, and model limitations, read [Calculation model and assumptions](docs/calculation-model.md).
+
+## Inputs at a glance
+
+| Section | Inputs | Notes |
+| --- | --- | --- |
+| Basic | Starting age, target age, initial balance, target balance | Initial and target balances are in CNY 10,000s (`万元`). |
+| Income | Starting annual income, annual growth rate, growth duration | Income is modeled annually; growth stops after the configured duration. |
+| Inflation | Annual inflation rate | Applied to selected expense categories and the modeled extra-savings offset, not to income or loan repayments. |
+| A — Fixed costs | Utilities, fuel/charging, parking, broadband/communications | Monthly yuan for the first three; annual yuan for broadband/communications. |
+| B — Daily spending | Monthly spending per person and household count | Monthly yuan. |
+| C — Annual items | Family support, travel per person, traveler count | Annual amounts in `万元`. |
+| D — Car loan | Monthly payment, start year, end year, end month | No start-month field is available; the start year is modeled as a full payment year. |
+| E — Housing | Mortgage payment and dates, rent, property fee | Mortgage payments are modeled by year; rent and property fees rise with modeled inflation. |
+| F — Other costs | Pet expenses, education, insurance/medical | Pet costs are monthly yuan; education and insurance/medical are annual `万元`. |
+| G — Custom | Two named monthly expense items | Monthly yuan per item. |
+| H — Housing fund/social security | Monthly contribution amounts and usable/inclusion percentages | User-selected proportions are counted as an additional annual-savings offset; they are not a statutory benefit calculation. |
+
+## Calculation model
+
+The implementation builds one row per modeled year. In simplified form:
+
+```text
+annual surplus = annual income - modeled annual expenses + modeled extra savings
+ending balance = prior balance × (1 + annual return) + annual surplus
 ```
-financial-freedom-miniprogram/
-├── app.js                      # 小程序入口
-├── app.json                    # 全局配置
-├── app.wxss                    # 全局样式
-├── sitemap.json                # 站点地图配置
+
+- **Return-solving mode** uses a binary search over an annual-return interval of **−50% to +100%** to find a rate whose projected ending balance approaches the target.
+- **Balance-projection mode** applies the selected annual return to the prior balance and then adds that year's modeled surplus.
+- **Inflation** increases selected expense categories by `(1 + inflation rate)^year_index`.
+- **Heuristic score and peer percentile** use fixed rules and hard-coded age-band distribution parameters in the source. They are not based on a live, cited, or independently validated population dataset.
+
+These simplifications intentionally make the app responsive and easy to explore, but they omit many real-world factors. See the [full model guide](docs/calculation-model.md) before interpreting results.
+
+## Project structure
+
+```text
+fire/
+├── app.js                         # Mini Program lifecycle and global data
+├── app.json                       # App-level page and window configuration
+├── app.wxss                       # Global styles
+├── project.config.json            # DevTools project settings
+├── sitemap.json                  # Mini Program sitemap configuration
 ├── pages/
 │   └── index/
-│       ├── index.js            # 主页面逻辑（核心计算引擎）
-│       ├── index.json          # 页面配置
-│       ├── index.wxml          # 页面结构
-│       └── index.wxss          # 页面样式
+│       ├── index.js               # Inputs, cash-flow engine, scoring, charts
+│       ├── index.json             # Page configuration and component registration
+│       ├── index.wxml             # Page UI
+│       └── index.wxss             # Page styles
 └── components/
-    └── ec-canvas/              # ECharts 小程序组件
-        ├── ec-canvas.js
-        ├── ec-canvas.json
-        ├── ec-canvas.wxml
-        ├── ec-canvas.wxss
-        └── echarts.js          # ⚠️ 需替换为完整ECharts库
+    └── ec-canvas/
+        ├── ec-canvas.js           # ECharts Canvas adapter component
+        ├── ec-canvas.json         # Component configuration
+        ├── ec-canvas.wxml         # Canvas markup
+        ├── ec-canvas.wxss         # Canvas styles
+        ├── wx-canvas.js           # WeChat Canvas compatibility adapter
+        └── echarts.js              # Bundled ECharts runtime
 ```
 
-## 使用方法
+## Privacy and data handling
 
-### 1. 替换 ECharts 库
-`components/ec-canvas/echarts.js` 当前为占位文件，需要替换为完整的 ECharts 小程序版：
+The inspected calculation and page code contains no custom backend, `wx.request`, `wx.cloud`, or Mini Program storage API calls. User inputs are maintained in the page's in-memory state for calculation; the app does not implement a save/load feature for scenarios. Values may be lost when the page or session is reset.
 
-**方式一：官网定制下载（推荐）**
-1. 访问 https://echarts.apache.org/zh/builder.html
-2. 选择需要的图表：柱状图、折线图
-3. 选择组件：图例、提示框、网格
-4. 下载后重命名为 `echarts.js`，替换 `components/ec-canvas/echarts.js`
+This is a statement about the repository code reviewed, not a guarantee about data handling by WeChat or the device platform itself. Review WeChat's own privacy terms and your Mini Program configuration separately.
 
-**方式二：官方示例项目获取**
-从 https://github.com/ecomfe/echarts-for-weixin 项目的 `ec-canvas` 目录中复制 `echarts.js`
+## Development and testing
 
-### 2. 导入微信开发者工具
-1. 打开「微信开发者工具」
-2. 选择「导入项目」
-3. 项目目录选择本文件夹 `financial-freedom-miniprogram`
-4. 填写 AppID（测试可选择「测试号」）
-5. 点击「导入」即可运行
+There is no automated test runner or CI workflow in the current source tree. Until automated checks are added, manually validate changes in WeChat DevTools:
 
-## 核心计算逻辑
+- Load all ten presets and confirm values render without errors.
+- Test both calculation modes with representative positive, zero, and negative annual surpluses.
+- Test target ages, loan start/end years, end-month boundaries, inflation, and custom expense labels.
+- Enable and disable each comparison rate and verify the balance chart updates.
+- Verify all four charts after repeated edits and after Reset All.
+- Check layout and touch interactions in the simulator and on a real device.
+- Confirm that changes have not introduced network calls or persistent storage without updating the privacy documentation.
 
-### 现金流构建
-- 按年循环，从起始年龄到目标年龄
-- 收入：前N年按增长率增长，之后持平
-- 支出：分7大类，按通胀率逐年膨胀
-- 贷款：车贷、房贷不通胀，按实际月份计算
-- 年结余 = 年收入 - 年总支出 + 额外储蓄（公积金可用部分+社保转养老金）
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution workflow.
 
-### 复利模拟
-逐年复利计算：`余额 = 上一年余额 × (1 + 收益率) + 本年储蓄`
+## Limitations and interpretation
 
-### 收益率求解
-二分法求解所需年化收益率，范围 -50% 到 100%，精度 1e-7
+- Results are scenarios, not forecasts. Income, spending, inflation, and investment returns may differ substantially from assumptions.
+- The model operates annually; it does not simulate intra-year timing, taxes, portfolio volatility, investment fees, asset allocation, or withdrawal strategy.
+- Loan modeling has limited date granularity and does not model amortization details or early repayment.
+- Housing-fund and social-security inputs are simple user-defined offsets, not calculations of eligibility, balances, benefits, or legal entitlements.
+- The financial-freedom score and peer percentile are heuristic indicators, not validated financial-health metrics or representative statistics.
+- Return-solving is bounded to −50% through +100%; extreme or infeasible input combinations may not produce a meaningful interpretation at the boundary.
+- The project snapshot reviewed does not contain a `LICENSE` file. The project's license and reuse permissions are therefore **not yet specified**. Add a license chosen by the maintainer before presenting the repository as reusable open-source software.
 
-### 财务自由指数（满分100）
-- 储蓄率（25分）：按月结余/月收入分级
-- 可行性（25分）：按所需收益率分级
-- 成长性（20分）：按年龄和收入增长率分级
-- 支出健康度（15分）：支出占比+房贷占比
-- 目标合理性（15分）：目标/年收入倍数
+## Contributing, security, and support
 
-## 设计规范
+- [Contributing guide](CONTRIBUTING.md)
+- [Security policy](SECURITY.md)
+- [Open an issue](https://github.com/LiSichao/fire/issues)
+- [Support guide](SUPPORT.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
 
-### 主题色
-- 主色：靛蓝 #6366F1
-- 收入：绿色 #10B981
-- 支出：红色 #EF4444
-- 结余：深绿 #059669
+Please avoid posting real personal financial data, credentials, or sensitive device information in issues or screenshots.
 
-### 等级徽章
-- 绿色：已超达 / 极容易 / 适中
-- 黄色：有挑战 / 接近
-- 橙色：困难
-- 红色：极难 / 不现实 / 差距大
+## Third-party notices
 
-## 隐私承诺
-
-纯前端工具，无服务器后台。所有数据仅保存在你的手机本地，不上传任何信息。
-
----
-
-© 2026 财务自由进度条 · 仅供参考，不构成投资建议
+The repository includes a bundled ECharts runtime under `components/ec-canvas/echarts.js`, which carries Apache License 2.0 notice text. Preserve the applicable license and copyright notices when changing or redistributing that bundle. The project's own license is not specified in the reviewed repository snapshot; see the note above.

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security and vulnerability reporting / 安全与漏洞报告
+    url: https://github.com/LiSichao/fire/security/policy
+    about: Do not disclose vulnerabilities in public issues. Read the security policy first. / 请勿在公开 Issue 中披露漏洞，请先阅读安全策略。
+  - name: Project documentation / 项目文档
+    url: https://github.com/LiSichao/fire#readme
+    about: Read the README and calculation-model guide before filing a question. / 提问前请阅读 README 和计算模型文档。

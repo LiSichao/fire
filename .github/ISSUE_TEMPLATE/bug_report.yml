@@ -1,0 +1,76 @@
+name: "🐛 Bug report / 缺陷报告"
+description: "Report a reproducible problem in FIRE / 报告 FIRE 中可复现的问题"
+title: "[Bug]: "
+labels:
+  - bug
+  - needs-triage
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve FIRE. Please search existing issues first.
+        感谢帮助改进 FIRE。请先搜索是否已有相同问题。
+
+        **Privacy / 隐私:** Do not include real financial records, account numbers, credentials, or other identifying data. Please anonymize screenshots.
+        **隐私提示：** 请勿提交真实财务记录、账户号码、凭证或其他可识别个人的信息；截图请先脱敏。
+  - type: checkboxes
+    id: duplicate-check
+    attributes:
+      label: Duplicate check / 重复问题检查
+      options:
+        - label: I searched existing issues for the same problem / 我已搜索现有 Issue
+          required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened? / 问题描述
+      description: Describe the observed behavior and what you expected instead. / 请描述实际表现及预期表现。
+      placeholder: "Observed / 实际情况…"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce / 复现步骤
+      description: Include sample inputs only if they are synthetic and non-identifying. / 示例数据必须是虚构且不包含个人信息的数据。
+      placeholder: |
+        1. Open… / 打开…
+        2. Set… / 设置…
+        3. Observe… / 观察…
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area / 影响模块
+      options:
+        - Cash-flow calculation / 现金流计算
+        - Return-solving mode / 反推收益率模式
+        - Balance projection / 终值预测模式
+        - Charts / 图表
+        - Inputs or presets / 参数或预设
+        - Layout or interaction / 布局或交互
+        - Other / 其他
+    validations:
+      required: true
+  - type: input
+    id: devtools-version
+    attributes:
+      label: WeChat DevTools version / 微信开发者工具版本
+      placeholder: "e.g. 1.x.x / 例如 1.x.x"
+    validations:
+      required: false
+  - type: input
+    id: device
+    attributes:
+      label: Device and OS / 设备与系统
+      placeholder: "e.g. iPhone model + iOS version / 例如 iPhone 型号与 iOS 版本"
+    validations:
+      required: false
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context / 补充信息
+      description: Add anonymized screenshots or logs, if useful. / 可补充脱敏截图或日志。
+    validations:
+      required: false
