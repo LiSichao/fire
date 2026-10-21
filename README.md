@@ -2,7 +2,7 @@
 
 **Explore your path to financial freedom.** FIRE (Financial Independence, Retire Early) is a client-side WeChat Mini Program for modeling income, expenses, savings, inflation, and investment-return scenarios.
 
-[简体中文](README.zh-CN.md) · [Calculation model](docs/calculation-model.md) · [Contributing](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Security policy](SECURITY.md) · [Support](SUPPORT.md) · [Repository setup](GITHUB_REPOSITORY_SETUP.md)
+[简体中文](README.zh-CN.md) · [Calculation model](docs/calculation-model.md) · [Contributing](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Security policy](SECURITY.md) · [Support](SUPPORT.md) · [License](LICENSE) · [Repository setup](GITHUB_REPOSITORY_SETUP.md)
 
 > **Important:** FIRE is an educational planning tool, not a financial product, investment recommendation, tax calculator, pension calculator, or guarantee of future results. Its outputs depend on user-entered assumptions and simplified annual calculations.
 
@@ -147,7 +147,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution workflow.
 - Housing-fund and social-security inputs are simple user-defined offsets, not calculations of eligibility, balances, benefits, or legal entitlements.
 - The financial-freedom score and peer percentile are heuristic indicators, not validated financial-health metrics or representative statistics.
 - Return-solving is bounded to −50% through +100%; extreme or infeasible input combinations may not produce a meaningful interpretation at the boundary.
-- The project snapshot reviewed does not contain a `LICENSE` file. The project's license and reuse permissions are therefore **not yet specified**. Add a license chosen by the maintainer before presenting the repository as reusable open-source software.
 
 ## Contributing, security, and support
 
@@ -159,6 +158,10 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution workflow.
 
 Please avoid posting real personal financial data, credentials, or sensitive device information in issues or screenshots.
 
+## License
+
+Project-owned code in this repository is licensed under the [MIT License](LICENSE), subject to any file-specific notices. Third-party code, bundled dependencies, and other assets retain their respective licenses; the root MIT license does not relicense third-party materials.
+
 ## Third-party notices
 
-The repository includes a bundled ECharts runtime under `components/ec-canvas/echarts.js`, which carries Apache License 2.0 notice text. Preserve the applicable license and copyright notices when changing or redistributing that bundle. The project's own license is not specified in the reviewed repository snapshot; see the note above.
+The repository includes a bundled ECharts runtime under `components/ec-canvas/echarts.js`, which carries Apache License 2.0 notice text. Preserve its applicable license and copyright notices when changing or redistributing that bundle.

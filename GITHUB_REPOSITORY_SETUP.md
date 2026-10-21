@@ -104,7 +104,7 @@ The forms follow GitHub's YAML issue-form structure. They ask for reproduction d
 
 ## 7. Release-readiness checklist
 
-- [ ] Choose and add a project `LICENSE` after confirming the rights holder's intent. Do not infer a license from the bundled ECharts license; third-party licensing does not license the project itself.
+- [ ] Review the included `LICENSE` (MIT) copyright holder and confirm you have the right to license the project-owned code before committing it. Keep all third-party license notices intact.
 - [ ] Create the labels listed above.
 - [ ] Confirm `SECURITY.md` points to a reporting channel that maintainers actually monitor. If GitHub private vulnerability reporting is enabled for this repository, direct reports there.
 - [ ] Review the privacy statement after every change that introduces network requests, analytics, cloud functions, or persistent storage.
@@ -113,7 +113,7 @@ The forms follow GitHub's YAML issue-form structure. They ask for reproduction d
 - [ ] Enable Discussions only if someone will actively moderate and answer them; otherwise, use Issues and `SUPPORT.md`.
 - [ ] Upload a social-preview image once the final visual is ready.
 
-**Important licensing note:** this package intentionally does not create a `LICENSE` file. Choosing a license is a maintainer decision with legal consequences. Until a license is added, do not present reuse, modification, or redistribution permissions as settled.
+**Important licensing note:** this package now includes a standard MIT `LICENSE` with the copyright notice `Li Sichao`. Confirm the copyright holder and year are appropriate before committing. The MIT license applies to project-owned code; third-party components, including ECharts, retain their own licenses.
 
 ## 8. Applying the metadata
 

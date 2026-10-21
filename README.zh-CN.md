@@ -2,7 +2,7 @@
 
 **把财务自由从目标变成可推演的路径。** FIRE 是 Financial Independence, Retire Early（财务独立、提前退休）的规划工具，通过微信小程序模拟收入、支出、储蓄、通胀与投资收益情景，核心计算在客户端完成。
 
-[English](README.md) · [计算模型与假设](docs/calculation-model.zh-CN.md) · [贡献指南](CONTRIBUTING.zh-CN.md) · [行为准则](CODE_OF_CONDUCT.zh-CN.md) · [安全策略](SECURITY.zh-CN.md) · [使用支持](SUPPORT.zh-CN.md) · [GitHub 仓库配置建议](GITHUB_REPOSITORY_SETUP.zh-CN.md)
+[English](README.md) · [计算模型与假设](docs/calculation-model.zh-CN.md) · [贡献指南](CONTRIBUTING.zh-CN.md) · [行为准则](CODE_OF_CONDUCT.zh-CN.md) · [安全策略](SECURITY.zh-CN.md) · [使用支持](SUPPORT.zh-CN.md) · [许可证](LICENSE) · [GitHub 仓库配置建议](GITHUB_REPOSITORY_SETUP.zh-CN.md)
 
 > **重要声明：** FIRE 仅用于学习、情景分析与个人规划，不是金融产品、投资建议、税务计算器或养老金计算器，也不保证未来结果。输出取决于用户填写的假设以及经过简化的年度模型。
 
@@ -147,18 +147,21 @@ fire/
 - 公积金和社保被简化为用户自定义比例对应的额外储蓄，不用于判断资格、账户余额、法定待遇或法律权益。
 - 财务自由指数和同龄人百分位是启发式指标，不是经过验证的财务健康评价或具有代表性的统计结论。
 - 反推收益率范围为 −50% 至 +100%；极端或无法实现的参数组合可能在边界处得到结果，不应脱离模型假设解读。
-- 本次检查的仓库快照中没有 `LICENSE` 文件，因此项目的许可证和复用权限**尚未明确**。维护者应先选择并添加许可证，再将仓库作为可复用的开源软件发布。
 
 ## 贡献、安全与反馈
 
 - [贡献指南](CONTRIBUTING.zh-CN.md)
 - [安全策略](SECURITY.zh-CN.md)
 - [提交 Issue](https://github.com/LiSichao/fire/issues)
-- [使用支持](SUPPORT.zh-CN.md)
+- [使用支持](SUPPORT.zh-CN.md) · [许可证](LICENSE)
 - [行为准则](CODE_OF_CONDUCT.zh-CN.md)
 
 请勿在 Issue 或截图中公开真实个人财务数据、访问凭证或敏感设备信息。
 
+## 许可证
+
+本仓库中由项目维护者编写的代码采用 [MIT 许可证](LICENSE)，但文件中另有声明的情况除外。第三方代码、随仓库分发的依赖和其他素材仍遵循各自适用的许可证；根目录的 MIT 许可证不会将第三方材料重新许可为 MIT。
+
 ## 第三方声明
 
-仓库在 `components/ec-canvas/echarts.js` 中包含 ECharts 运行时文件，该文件带有 Apache License 2.0 相关声明。修改或再分发该组件时，请保留适用的许可证与版权声明。项目自身的许可证在本次检查的仓库快照中尚未明确，详见上文。
+仓库在 `components/ec-canvas/echarts.js` 中包含 ECharts 运行时文件，该文件带有 Apache License 2.0 相关声明。修改或再分发该组件时，请保留其适用的许可证与版权声明。
