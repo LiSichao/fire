@@ -434,6 +434,24 @@ const ADVICE_HINTS = {
   s5: '调整目标到年收入的 10-20 倍',
 };
 
+// 总分等级
+function scoreLevel(total) {
+  if (total >= 85) return { text: '🟢 优秀', tone: 'green', badgeClass: 'level-green' };
+  if (total >= 70) return { text: '🟢 良好', tone: 'green', badgeClass: 'level-green' };
+  if (total >= 55) return { text: '🟡 中等', tone: 'yellow', badgeClass: 'level-yellow' };
+  if (total >= 40) return { text: '🟠 偏弱', tone: 'orange', badgeClass: 'level-orange' };
+  return { text: '🔴 待改善', tone: 'red', badgeClass: 'level-red' };
+}
+
+// 单维度配色
+function dimTone(score, max) {
+  const ratio = max > 0 ? score / max : 0;
+  if (ratio >= 0.75) return 'green';
+  if (ratio >= 0.5) return 'yellow';
+  if (ratio >= 0.25) return 'orange';
+  return 'red';
+}
+
 function generateInsights(breakdown) {
   const dimensions = [
     { key: 's1', max: 25, score: breakdown.s1 },
@@ -550,6 +568,21 @@ Page({
     ecChart2: { lazyLoad: true },
     ecChart3: { lazyLoad: true },
     ecChart4: { lazyLoad: true },
+
+    // 财务自由指数
+    freedom: {
+      show: false,
+      score: 0,
+      percentile: 0,
+      ageBand: '',
+      tone: 'gray',
+      badgeClass: 'level-gray',
+      levelText: '',
+      dims: [],
+      strength: '',
+      weakness: '',
+      advice: '',
+    },
   },
 
   onLoad() {
@@ -562,6 +595,9 @@ Page({
     
     // 防抖定时器
     this._recalcTimer = null;
+    // 图表实例缓存（每个 canvas 只 init 一次）
+    this._charts = {};
+    this._chartIniting = {};
   },
 
   onReady() {
@@ -570,6 +606,26 @@ Page({
     this.chart2Component = this.selectComponent('#chart2');
     this.chart3Component = this.selectComponent('#chart3');
     this.chart4Component = this.selectComponent('#chart4');
+  },
+
+  onUnload() {
+    if (this._recalcTimer) {
+      clearTimeout(this._recalcTimer);
+      this._recalcTimer = null;
+    }
+    if (this._charts) {
+      Object.keys(this._charts).forEach(key => {
+        const chart = this._charts[key];
+        if (!chart || chart.isDisposed()) return;
+        try {
+          chart.dispose();
+        } catch (err) {
+          console.warn('释放图表实例失败：', key, err);
+        }
+      });
+      this._charts = {};
+    }
+    this._chartIniting = {};
   },
 
   // 输入处理
@@ -779,6 +835,7 @@ Page({
       this.setData({
         hasResult: false,
         timeline: '请填入参数或加载示例',
+        'freedom.show': false,
       });
       return;
     }
@@ -789,6 +846,7 @@ Page({
         card1Value: '—',
         card2Value: '—',
         timeline: '请将「目标年龄」设置为大于「起始年龄」',
+        'freedom.show': false,
       });
       return;
     }
@@ -951,6 +1009,13 @@ Page({
       card2BadgeText = '📊 结构';
     }
 
+    // 计算财务自由指数（未设目标时分数含义不成立，直接不展示）
+    let freedom = { show: false };
+    if (p.target > 0 && resultMeta && typeof resultMeta.requiredRate === 'number') {
+      const index = calculateFreedomIndex(p, { requiredRate: resultMeta.requiredRate });
+      freedom = this._buildFreedomView(index, p);
+    }
+
     this.setData({
       hasResult: true,
       mainTitle,
@@ -959,23 +1024,38 @@ Page({
       card1BadgeShow, card1BadgeClass, card1BadgeText,
       card2Label, card2Value, card2Color, card2Sub,
       card2BadgeShow, card2BadgeClass, card2BadgeText,
+      freedom,
     });
 
     // 渲染图表
     this._renderCharts(p, cf, lines);
+  },
 
-    // 计算财务自由指数
-    if (resultMeta && typeof resultMeta.requiredRate === 'number') {
-      const index = calculateFreedomIndex(p, { requiredRate: resultMeta.requiredRate });
-      const insights = generateInsights(index.breakdown);
-      this._freedomIndex = {
-        score: index.total,
-        breakdown: index.breakdown,
-        percentile: comparePeers(index.total, p.startAge),
-        ageBand: getAgeBandLabel(p.startAge),
-        ...insights,
-      };
-    }
+  // 构建财务自由指数的展示数据
+  _buildFreedomView(index, p) {
+    const insights = generateInsights(index.breakdown);
+    const level = scoreLevel(index.total);
+    const dims = [
+      { key: 's1', name: '储蓄率', score: index.breakdown.s1, max: 25 },
+      { key: 's2', name: '目标可行性', score: index.breakdown.s2, max: 25 },
+      { key: 's3', name: '收入增长假设', score: index.breakdown.s3, max: 20 },
+      { key: 's4', name: '支出结构', score: index.breakdown.s4, max: 15 },
+      { key: 's5', name: '目标规模', score: index.breakdown.s5, max: 15 },
+    ].map(d => ({ ...d, pct: Math.round(d.score / d.max * 100), tone: dimTone(d.score, d.max) }));
+
+    return {
+      show: true,
+      score: index.total,
+      percentile: comparePeers(index.total, p.startAge),
+      ageBand: getAgeBandLabel(p.startAge),
+      tone: level.tone,
+      badgeClass: level.badgeClass,
+      levelText: level.text,
+      dims: dims,
+      strength: insights.strength,
+      weakness: insights.weakness,
+      advice: insights.advice,
+    };
   },
 
   // 标准化参数（百分比转小数）
@@ -1007,246 +1087,264 @@ Page({
     this._renderChart4(cf, ageLabels);
   },
 
+  // 统一图表渲染入口：实例只创建一次，之后仅更新配置
+  _updateChart(key, option) {
+    const comp = this.selectComponent('#' + key);
+    if (!comp) return;
+    if (!this._charts) this._charts = {};
+    if (!this._chartIniting) this._chartIniting = {};
+
+    const cached = this._charts[key];
+    // 复用条件：实例未销毁，且仍是当前挂载组件持有的实例（wx:if 重建后 canvas 已换新）
+    if (cached && comp.chart === cached && !cached.isDisposed()) {
+      cached.setOption(option, true);
+      return;
+    }
+
+    // 旧 canvas 已销毁但实例还挂着，先释放，避免泄漏
+    if (cached && !cached.isDisposed()) {
+      try {
+        cached.dispose();
+      } catch (err) {
+        console.warn('释放图表实例失败：', key, err);
+      }
+      this._charts[key] = null;
+    }
+
+    // 首次初始化尚未完成时，只记录最新配置，避免重复 init
+    if (this._chartIniting[key]) {
+      this._chartIniting[key].option = option;
+      return;
+    }
+
+    const pending = { option };
+    this._chartIniting[key] = pending;
+    comp.init((canvas, width, height, dpr) => {
+      try {
+        const instance = echarts.init(canvas, null, { width, height, devicePixelRatio: dpr });
+        canvas.setChart(instance);
+        instance.setOption(pending.option, true);
+        this._charts[key] = instance;
+        return instance;
+      } finally {
+        // 无论成功与否都解除占位，避免后续渲染被永久阻塞
+        this._chartIniting[key] = null;
+      }
+    });
+  },
+
   // 图表1：收入vs支出
   _renderChart1(cf, labels) {
-    if (!this.selectComponent('#chart1')) return;
-    this.selectComponent('#chart1').init((canvas, width, height, dpr) => {
-      const chart = echarts.init(canvas, null, { width, height, devicePixelRatio: dpr });
-      canvas.setChart(chart);
-      
-      const option = {
-        tooltip: {
-          trigger: 'axis',
-          backgroundColor: 'rgba(31, 41, 55, 0.95)',
-          textStyle: { fontSize: 11, color: '#fff' },
-          formatter: function(params) {
-            let result = params[0].axisValue + '<br/>';
-            params.forEach(item => {
-              result += item.marker + item.seriesName + ': ' + item.value.toFixed(2) + 'w<br/>';
-            });
-            return result;
-          }
+    const option = {
+      tooltip: {
+        trigger: 'axis',
+        backgroundColor: 'rgba(31, 41, 55, 0.95)',
+        textStyle: { fontSize: 11, color: '#fff' },
+        formatter: function(params) {
+          let result = params[0].axisValue + '<br/>';
+          params.forEach(item => {
+            result += item.marker + item.seriesName + ': ' + item.value.toFixed(2) + 'w<br/>';
+          });
+          return result;
+        }
+      },
+      legend: {
+        top: 0,
+        textStyle: { fontSize: 11, color: '#6B7280' },
+        itemStyle: { borderRadius: 2 }
+      },
+      grid: { left: 50, right: 20, top: 40, bottom: 30 },
+      xAxis: {
+        type: 'category',
+        data: labels,
+        axisLabel: { fontSize: 10, color: '#9CA3AF', interval: Math.floor(labels.length / 8) },
+        axisLine: { lineStyle: { color: '#E5E7EB' } }
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: { fontSize: 10, color: '#9CA3AF', formatter: '{value}w' },
+        splitLine: { lineStyle: { color: '#F3F4F6' } }
+      },
+      series: [
+        {
+          name: '收入',
+          type: 'bar',
+          data: cf.map(r => +r.income.toFixed(2)),
+          itemStyle: { color: COLORS.income, borderRadius: [4, 4, 0, 0] },
+          barWidth: '35%'
         },
-        legend: {
-          top: 0,
-          textStyle: { fontSize: 11, color: '#6B7280' },
-          itemStyle: { borderRadius: 2 }
-        },
-        grid: { left: 50, right: 20, top: 40, bottom: 30 },
-        xAxis: {
-          type: 'category',
-          data: labels,
-          axisLabel: { fontSize: 10, color: '#9CA3AF', interval: Math.floor(labels.length / 8) },
-          axisLine: { lineStyle: { color: '#E5E7EB' } }
-        },
-        yAxis: {
-          type: 'value',
-          axisLabel: { fontSize: 10, color: '#9CA3AF', formatter: '{value}w' },
-          splitLine: { lineStyle: { color: '#F3F4F6' } }
-        },
-        series: [
-          {
-            name: '收入',
-            type: 'bar',
-            data: cf.map(r => +r.income.toFixed(2)),
-            itemStyle: { color: COLORS.income, borderRadius: [4, 4, 0, 0] },
-            barWidth: '35%'
-          },
-          {
-            name: '总支出',
-            type: 'bar',
-            data: cf.map(r => +r.totalExpense.toFixed(2)),
-            itemStyle: { color: COLORS.expense, borderRadius: [4, 4, 0, 0] },
-            barWidth: '35%'
-          }
-        ]
-      };
-      chart.setOption(option);
-      return chart;
-    });
+        {
+          name: '总支出',
+          type: 'bar',
+          data: cf.map(r => +r.totalExpense.toFixed(2)),
+          itemStyle: { color: COLORS.expense, borderRadius: [4, 4, 0, 0] },
+          barWidth: '35%'
+        }
+      ]
+    };
+    this._updateChart('chart1', option);
   },
 
   // 图表2：支出结构堆叠
   _renderChart2(cf, labels, p) {
-    if (!this.selectComponent('#chart2')) return;
-    this.selectComponent('#chart2').init((canvas, width, height, dpr) => {
-      const chart = echarts.init(canvas, null, { width, height, devicePixelRatio: dpr });
-      canvas.setChart(chart);
+    const c1 = p.custom1Name || '自定义1';
+    const c2 = p.custom2Name || '自定义2';
+    const gName = (c1 || c2) ? `G ${c1 || ''}${(c1 && c2) ? '+' : ''}${c2 || ''}` : 'G 自定义';
 
-      const c1 = p.custom1Name || '自定义1';
-      const c2 = p.custom2Name || '自定义2';
-      const gName = (c1 || c2) ? `G ${c1 || ''}${(c1 && c2) ? '+' : ''}${c2 || ''}` : 'G 自定义';
-
-      const option = {
-        tooltip: {
-          trigger: 'axis',
-          backgroundColor: 'rgba(31, 41, 55, 0.95)',
-          textStyle: { fontSize: 11, color: '#fff' }
-        },
-        legend: {
-          top: 0,
-          textStyle: { fontSize: 10, color: '#6B7280' },
-          type: 'scroll',
-          padding: [0, 10]
-        },
-        grid: { left: 50, right: 20, top: 50, bottom: 30 },
-        xAxis: {
-          type: 'category',
-          data: labels,
-          axisLabel: { fontSize: 10, color: '#9CA3AF', interval: Math.floor(labels.length / 8) },
-          axisLine: { lineStyle: { color: '#E5E7EB' } }
-        },
-        yAxis: {
-          type: 'value',
-          stack: 'total',
-          axisLabel: { fontSize: 10, color: '#9CA3AF', formatter: '{value}w' },
-          splitLine: { lineStyle: { color: '#F3F4F6' } }
-        },
-        series: [
-          { name: 'A 刚性', type: 'bar', stack: 'total', data: cf.map(r => +r.A.toFixed(2)), itemStyle: { color: COLORS.expA } },
-          { name: 'B 日常', type: 'bar', stack: 'total', data: cf.map(r => +r.B.toFixed(2)), itemStyle: { color: COLORS.expB } },
-          { name: 'C 大项', type: 'bar', stack: 'total', data: cf.map(r => +r.C.toFixed(2)), itemStyle: { color: COLORS.expC } },
-          { name: 'D 车贷', type: 'bar', stack: 'total', data: cf.map(r => +r.D.toFixed(2)), itemStyle: { color: COLORS.expD } },
-          { name: 'E 住房', type: 'bar', stack: 'total', data: cf.map(r => +r.E.toFixed(2)), itemStyle: { color: COLORS.expE } },
-          { name: 'F 其他', type: 'bar', stack: 'total', data: cf.map(r => +r.F.toFixed(2)), itemStyle: { color: COLORS.expF } },
-          { name: gName, type: 'bar', stack: 'total', data: cf.map(r => +r.G.toFixed(2)), itemStyle: { color: COLORS.expG } },
-        ]
-      };
-      chart.setOption(option);
-      return chart;
-    });
+    const option = {
+      tooltip: {
+        trigger: 'axis',
+        backgroundColor: 'rgba(31, 41, 55, 0.95)',
+        textStyle: { fontSize: 11, color: '#fff' }
+      },
+      legend: {
+        top: 0,
+        textStyle: { fontSize: 10, color: '#6B7280' },
+        type: 'scroll',
+        padding: [0, 10]
+      },
+      grid: { left: 50, right: 20, top: 50, bottom: 30 },
+      xAxis: {
+        type: 'category',
+        data: labels,
+        axisLabel: { fontSize: 10, color: '#9CA3AF', interval: Math.floor(labels.length / 8) },
+        axisLine: { lineStyle: { color: '#E5E7EB' } }
+      },
+      yAxis: {
+        type: 'value',
+        stack: 'total',
+        axisLabel: { fontSize: 10, color: '#9CA3AF', formatter: '{value}w' },
+        splitLine: { lineStyle: { color: '#F3F4F6' } }
+      },
+      series: [
+        { name: 'A 刚性', type: 'bar', stack: 'total', data: cf.map(r => +r.A.toFixed(2)), itemStyle: { color: COLORS.expA } },
+        { name: 'B 日常', type: 'bar', stack: 'total', data: cf.map(r => +r.B.toFixed(2)), itemStyle: { color: COLORS.expB } },
+        { name: 'C 大项', type: 'bar', stack: 'total', data: cf.map(r => +r.C.toFixed(2)), itemStyle: { color: COLORS.expC } },
+        { name: 'D 车贷', type: 'bar', stack: 'total', data: cf.map(r => +r.D.toFixed(2)), itemStyle: { color: COLORS.expD } },
+        { name: 'E 住房', type: 'bar', stack: 'total', data: cf.map(r => +r.E.toFixed(2)), itemStyle: { color: COLORS.expE } },
+        { name: 'F 其他', type: 'bar', stack: 'total', data: cf.map(r => +r.F.toFixed(2)), itemStyle: { color: COLORS.expF } },
+        { name: gName, type: 'bar', stack: 'total', data: cf.map(r => +r.G.toFixed(2)), itemStyle: { color: COLORS.expG } },
+      ]
+    };
+    this._updateChart('chart2', option);
   },
 
   // 图表3：存款累积曲线
   _renderChart3(lines, labels, p) {
-    if (!this.selectComponent('#chart3')) return;
-    this.selectComponent('#chart3').init((canvas, width, height, dpr) => {
-      const chart = echarts.init(canvas, null, { width, height, devicePixelRatio: dpr });
-      canvas.setChart(chart);
-
-      const datasets = lines.map((line, idx) => {
-        const color = line.isMain ? COLORS.indigo : COMPARE_LINE_COLORS[(idx - 1) % COMPARE_LINE_COLORS.length];
-        return {
-          name: line.label,
-          type: 'line',
-          data: line.balances.map(b => +b.toFixed(1)),
-          lineStyle: {
-            color: color,
-            width: line.isMain ? 3 : 1.8,
-            type: line.isMain ? 'solid' : 'dashed',
-          },
-          itemStyle: { color: color },
-          symbolSize: line.isMain ? 6 : 3,
-          showSymbol: line.isMain,
-          smooth: true,
-          areaStyle: line.isMain ? { color: color + '20' } : undefined,
-        };
-      });
-
-      if (p.target > 0) {
-        datasets.push({
-          name: `目标 ${formatMoney(p.target)}`,
-          type: 'line',
-          data: labels.map(_ => p.target),
-          lineStyle: { color: COLORS.target, type: 'dashed', width: 1.5 },
-          itemStyle: { color: COLORS.target },
-          symbol: 'none',
-          smooth: false,
-        });
-      }
-
-      const option = {
-        tooltip: {
-          trigger: 'axis',
-          backgroundColor: 'rgba(31, 41, 55, 0.95)',
-          textStyle: { fontSize: 11, color: '#fff' }
+    const datasets = lines.map((line, idx) => {
+      const color = line.isMain ? COLORS.indigo : COMPARE_LINE_COLORS[(idx - 1) % COMPARE_LINE_COLORS.length];
+      return {
+        name: line.label,
+        type: 'line',
+        data: line.balances.map(b => +b.toFixed(1)),
+        lineStyle: {
+          color: color,
+          width: line.isMain ? 3 : 1.8,
+          type: line.isMain ? 'solid' : 'dashed',
         },
-        legend: {
-          top: 0,
-          textStyle: { fontSize: 11, color: '#6B7280' },
-          type: 'scroll',
-          padding: [0, 10]
-        },
-        grid: { left: 60, right: 20, top: 50, bottom: 30 },
-        xAxis: {
-          type: 'category',
-          data: labels,
-          boundaryGap: false,
-          axisLabel: { fontSize: 10, color: '#9CA3AF', interval: Math.floor(labels.length / 10) },
-          axisLine: { lineStyle: { color: '#E5E7EB' } }
-        },
-        yAxis: {
-          type: 'value',
-          axisLabel: { fontSize: 10, color: '#9CA3AF', formatter: '{value}w' },
-          splitLine: { lineStyle: { color: '#F3F4F6' } }
-        },
-        series: datasets
+        itemStyle: { color: color },
+        symbolSize: line.isMain ? 6 : 3,
+        showSymbol: line.isMain,
+        smooth: true,
+        areaStyle: line.isMain ? { color: color + '20' } : undefined,
       };
-      chart.setOption(option);
-      return chart;
     });
+
+    if (p.target > 0) {
+      datasets.push({
+        name: `目标 ${formatMoney(p.target)}`,
+        type: 'line',
+        data: labels.map(_ => p.target),
+        lineStyle: { color: COLORS.target, type: 'dashed', width: 1.5 },
+        itemStyle: { color: COLORS.target },
+        symbol: 'none',
+        smooth: false,
+      });
+    }
+
+    const option = {
+      tooltip: {
+        trigger: 'axis',
+        backgroundColor: 'rgba(31, 41, 55, 0.95)',
+        textStyle: { fontSize: 11, color: '#fff' }
+      },
+      legend: {
+        top: 0,
+        textStyle: { fontSize: 11, color: '#6B7280' },
+        type: 'scroll',
+        padding: [0, 10]
+      },
+      grid: { left: 60, right: 20, top: 50, bottom: 30 },
+      xAxis: {
+        type: 'category',
+        data: labels,
+        boundaryGap: false,
+        axisLabel: { fontSize: 10, color: '#9CA3AF', interval: Math.floor(labels.length / 10) },
+        axisLine: { lineStyle: { color: '#E5E7EB' } }
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: { fontSize: 10, color: '#9CA3AF', formatter: '{value}w' },
+        splitLine: { lineStyle: { color: '#F3F4F6' } }
+      },
+      series: datasets
+    };
+    this._updateChart('chart3', option);
   },
 
   // 图表4：年度结余分解
   _renderChart4(cf, labels) {
-    if (!this.selectComponent('#chart4')) return;
-    this.selectComponent('#chart4').init((canvas, width, height, dpr) => {
-      const chart = echarts.init(canvas, null, { width, height, devicePixelRatio: dpr });
-      canvas.setChart(chart);
-
-      const option = {
-        tooltip: {
-          trigger: 'axis',
-          backgroundColor: 'rgba(31, 41, 55, 0.95)',
-          textStyle: { fontSize: 11, color: '#fff' }
+    const option = {
+      tooltip: {
+        trigger: 'axis',
+        backgroundColor: 'rgba(31, 41, 55, 0.95)',
+        textStyle: { fontSize: 11, color: '#fff' }
+      },
+      legend: {
+        top: 0,
+        textStyle: { fontSize: 11, color: '#6B7280' }
+      },
+      grid: { left: 60, right: 20, top: 40, bottom: 30 },
+      xAxis: {
+        type: 'category',
+        data: labels,
+        axisLabel: { fontSize: 10, color: '#9CA3AF', interval: Math.floor(labels.length / 8) },
+        axisLine: { lineStyle: { color: '#E5E7EB' } }
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: { fontSize: 10, color: '#9CA3AF', formatter: '{value}w' },
+        splitLine: { lineStyle: { color: '#F3F4F6' } }
+      },
+      series: [
+        {
+          name: '收入',
+          type: 'bar',
+          data: cf.map(r => +r.income.toFixed(2)),
+          itemStyle: { color: COLORS.income + 'CC', borderRadius: [4, 4, 0, 0] },
+          barWidth: '30%',
+          z: 2
         },
-        legend: {
-          top: 0,
-          textStyle: { fontSize: 11, color: '#6B7280' }
+        {
+          name: '总支出',
+          type: 'bar',
+          data: cf.map(r => -(+r.totalExpense.toFixed(2))),
+          itemStyle: { color: '#FCA5A5', borderRadius: [0, 0, 4, 4] },
+          barWidth: '30%',
+          z: 2
         },
-        grid: { left: 60, right: 20, top: 40, bottom: 30 },
-        xAxis: {
-          type: 'category',
-          data: labels,
-          axisLabel: { fontSize: 10, color: '#9CA3AF', interval: Math.floor(labels.length / 8) },
-          axisLine: { lineStyle: { color: '#E5E7EB' } }
-        },
-        yAxis: {
-          type: 'value',
-          axisLabel: { fontSize: 10, color: '#9CA3AF', formatter: '{value}w' },
-          splitLine: { lineStyle: { color: '#F3F4F6' } }
-        },
-        series: [
-          {
-            name: '收入',
-            type: 'bar',
-            data: cf.map(r => +r.income.toFixed(2)),
-            itemStyle: { color: COLORS.income + 'CC', borderRadius: [4, 4, 0, 0] },
-            barWidth: '30%',
-            z: 2
-          },
-          {
-            name: '总支出',
-            type: 'bar',
-            data: cf.map(r => -(+r.totalExpense.toFixed(2))),
-            itemStyle: { color: '#FCA5A5', borderRadius: [0, 0, 4, 4] },
-            barWidth: '30%',
-            z: 2
-          },
-          {
-            name: '年结余',
-            type: 'line',
-            data: cf.map(r => +r.savings.toFixed(2)),
-            lineStyle: { color: COLORS.savings, width: 3 },
-            itemStyle: { color: COLORS.savings },
-            symbolSize: 6,
-            smooth: true,
-            z: 3
-          }
-        ]
-      };
-      chart.setOption(option);
-      return chart;
-    });
+        {
+          name: '年结余',
+          type: 'line',
+          data: cf.map(r => +r.savings.toFixed(2)),
+          lineStyle: { color: COLORS.savings, width: 3 },
+          itemStyle: { color: COLORS.savings },
+          symbolSize: 6,
+          smooth: true,
+          z: 3
+        }
+      ]
+    };
+    this._updateChart('chart4', option);
   },
 });

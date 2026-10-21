@@ -419,6 +419,55 @@
       </view>
     </view>
 
+    <!-- 财务自由指数 -->
+    <view wx:if="{{freedom.show}}" class="index-card">
+      <view class="index-head">
+        <view class="decorator"></view>
+        <text class="card-title-text">财务自由指数</text>
+        <text class="index-band">{{freedom.ageBand}}</text>
+      </view>
+
+      <view class="index-top">
+        <view class="index-score-wrap">
+          <text class="index-score {{freedom.tone}}">{{freedom.score}}</text>
+          <text class="index-score-unit">/100</text>
+        </view>
+        <view class="index-meta">
+          <view class="level-badge {{freedom.badgeClass}}">{{freedom.levelText}}</view>
+          <text class="index-peer">同龄人百分位 {{freedom.percentile}}</text>
+        </view>
+      </view>
+
+      <view class="index-dims">
+        <view class="dim" wx:for="{{freedom.dims}}" wx:key="key">
+          <view class="dim-head">
+            <text class="dim-name">{{item.name}}</text>
+            <text class="dim-score">{{item.score}} / {{item.max}}</text>
+          </view>
+          <view class="dim-track">
+            <view class="dim-fill {{item.tone}}" style="width: {{item.pct}}%;"></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="insights">
+        <view class="insight-row">
+          <text class="insight-tag tag-good">优势</text>
+          <text class="insight-text">{{freedom.strength}}</text>
+        </view>
+        <view class="insight-row">
+          <text class="insight-tag tag-bad">短板</text>
+          <text class="insight-text">{{freedom.weakness}}</text>
+        </view>
+        <view class="insight-row">
+          <text class="insight-tag tag-tip">建议</text>
+          <text class="insight-text">{{freedom.advice}}</text>
+        </view>
+      </view>
+
+      <view class="index-note">评分与百分位为内置规则的启发式估算，不代表真实同龄人统计，也不构成投资建议。</view>
+    </view>
+
     <!-- 图表区域 -->
     <view class="charts">
       <view class="chart-container">

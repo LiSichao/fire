@@ -50,3 +50,153 @@
 .field-input::-webkit-input-placeholder {
   color: #D1D5DB;
 }
+
+/* 财务自由指数卡片 */
+.index-card {
+  background: #FFFFFF;
+  border: 1rpx solid #E5E7EB;
+  border-radius: 24rpx;
+  padding: 36rpx 40rpx;
+  margin-bottom: 28rpx;
+}
+
+.index-head {
+  display: flex;
+  align-items: center;
+  margin-bottom: 28rpx;
+}
+
+.index-band {
+  margin-left: auto;
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+.index-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32rpx;
+}
+
+.index-score-wrap {
+  display: flex;
+  align-items: baseline;
+}
+
+.index-score {
+  font-size: 76rpx;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -2rpx;
+  font-variant-numeric: tabular-nums;
+}
+
+.index-score.green { color: #10B981; }
+.index-score.yellow { color: #F59E0B; }
+.index-score.orange { color: #F97316; }
+.index-score.red { color: #EF4444; }
+
+.index-score-unit {
+  font-size: 24rpx;
+  color: #9CA3AF;
+  margin-left: 8rpx;
+}
+
+.index-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10rpx;
+}
+
+.index-meta .level-badge {
+  margin: 0;
+}
+
+.index-peer {
+  font-size: 22rpx;
+  color: #6B7280;
+}
+
+.index-dims {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+  margin-bottom: 28rpx;
+}
+
+.dim-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.dim-name {
+  font-size: 23rpx;
+  color: #6B7280;
+}
+
+.dim-score {
+  font-size: 23rpx;
+  color: #9CA3AF;
+  font-variant-numeric: tabular-nums;
+}
+
+.dim-track {
+  height: 12rpx;
+  background: #F3F4F6;
+  border-radius: 999rpx;
+  overflow: hidden;
+}
+
+.dim-fill {
+  height: 100%;
+  border-radius: 999rpx;
+}
+
+.dim-fill.green { background: #10B981; }
+.dim-fill.yellow { background: #F59E0B; }
+.dim-fill.orange { background: #F97316; }
+.dim-fill.red { background: #EF4444; }
+
+.insights {
+  border-top: 1rpx solid #F3F4F6;
+  padding-top: 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.insight-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+}
+
+.insight-tag {
+  flex-shrink: 0;
+  font-size: 21rpx;
+  font-weight: 600;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  line-height: 1.5;
+}
+
+.tag-good { background: #DCFCE7; color: #15803D; }
+.tag-bad { background: #FEE2E2; color: #B91C1C; }
+.tag-tip { background: #EEF2FF; color: #4F46E5; }
+
+.insight-text {
+  flex: 1;
+  font-size: 23rpx;
+  color: #4B5563;
+  line-height: 1.6;
+}
+
+.index-note {
+  margin-top: 24rpx;
+  font-size: 21rpx;
+  color: #9CA3AF;
+  line-height: 1.6;
+}
