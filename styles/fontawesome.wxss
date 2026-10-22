@@ -1,0 +1,59 @@
+/*! Font Awesome Free 7.3.1 — https://fontawesome.com
+ *  License: https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT)
+ *  仅内嵌本项目用到的图标（字体已子集化），完全离线，不发起网络请求。
+ *
+ *  新增图标的步骤：
+ *  1. 在 @fortawesome/fontawesome-free 的 metadata/icon-families.json 里查到 unicode
+ *  2. pyftsubset webfonts/fa-solid-900.woff2 --unicodes=U+XXXX,... --flavor=woff2 --no-hinting --desubroutinize
+ *  3. 把新字体 base64 替换到下面的 src，并补一条 .fa-xxx::before 规则
+ */
+
+@font-face {
+  font-family: 'FA Solid';
+  src: url("data:font/woff2;base64,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") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: block;
+}
+
+.fa {
+  font-family: 'FA Solid';
+  font-weight: 900;
+  font-style: normal;
+  line-height: 1;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+}
+
+.fa-arrow-trend-down::before { content: "\e097"; }
+.fa-arrow-trend-up::before { content: "\e098"; }
+.fa-arrows-rotate::before { content: "\f021"; }
+.fa-baby::before { content: "\f77c"; }
+.fa-basket-shopping::before { content: "\f291"; }
+.fa-bolt::before { content: "\f0e7"; }
+.fa-briefcase::before { content: "\f0b1"; }
+.fa-building-columns::before { content: "\f19c"; }
+.fa-bullseye::before { content: "\f140"; }
+.fa-car::before { content: "\f1b9"; }
+.fa-chart-column::before { content: "\e0e3"; }
+.fa-chart-line::before { content: "\f201"; }
+.fa-chart-pie::before { content: "\f200"; }
+.fa-chart-simple::before { content: "\e473"; }
+.fa-chevron-down::before { content: "\f078"; }
+.fa-child::before { content: "\f1ae"; }
+.fa-children::before { content: "\e4e1"; }
+.fa-circle::before { content: "\f111"; }
+.fa-circle-check::before { content: "\f058"; }
+.fa-circle-plus::before { content: "\f055"; }
+.fa-circle-xmark::before { content: "\f057"; }
+.fa-gem::before { content: "\f3a5"; }
+.fa-graduation-cap::before { content: "\f19d"; }
+.fa-heart::before { content: "\f004"; }
+.fa-house::before { content: "\f015"; }
+.fa-lock::before { content: "\f023"; }
+.fa-paw::before { content: "\f1b0"; }
+.fa-piggy-bank::before { content: "\f4d3"; }
+.fa-plane::before { content: "\f072"; }
+.fa-rocket::before { content: "\f135"; }
+.fa-sliders::before { content: "\f1de"; }
+.fa-wallet::before { content: "\f555"; }

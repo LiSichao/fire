@@ -3,6 +3,6 @@
     "ec-canvas": "../../components/ec-canvas/ec-canvas"
   },
   "navigationBarTitleText": "FIRE 财务自由",
-  "backgroundColor": "#FBFBFB",
+  "backgroundColor": "#F3F5F8",
   "enablePullDownRefresh": false
 }

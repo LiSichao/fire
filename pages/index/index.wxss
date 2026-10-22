@@ -26,7 +26,7 @@
 
 .index-card {
   background: #FFFFFF;
-  border: 1rpx solid #ECEEF2;
+  border: 1rpx solid #E4E8F0;
   border-radius: 24rpx;
   padding: 32rpx;
   margin-bottom: 24rpx;
@@ -182,10 +182,18 @@
 }
 
 .footer-title {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
   font-size: 24rpx;
   font-weight: 600;
   color: #374151;
   margin-bottom: 8rpx;
+}
+
+.footer-title .fa {
+  font-size: 24rpx;
+  color: #6B7280;
 }
 
 .footer-text {

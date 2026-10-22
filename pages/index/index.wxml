@@ -22,7 +22,8 @@
         bindtap="applyPreset"
         data-key="{{item.key}}"
       >
-        {{item.label}}
+        <view class="fa {{item.icon}}"></view>
+        <text>{{item.label}}</text>
       </view>
     </scroll-view>
   </view>
@@ -93,8 +94,8 @@
   <!-- 基础参数 -->
   <view class="section {{sections.base ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="base">
-      <text>基础参数</text>
-      <text class="arrow">▼</text>
+      <view class="section-title"><view class="fa fa-sliders"></view><text>基础参数</text></view>
+      <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
       <view class="field">
@@ -133,8 +134,8 @@
   <!-- 收入参数 -->
   <view class="section {{sections.income ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="income">
-      <text>收入参数</text>
-      <text class="arrow">▼</text>
+      <view class="section-title"><view class="fa fa-wallet"></view><text>收入参数</text></view>
+      <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
       <view class="field">
@@ -173,8 +174,8 @@
   <!-- 通胀参数 -->
   <view class="section {{sections.inflation ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="inflation">
-      <text>通胀参数</text>
-      <text class="arrow">▼</text>
+      <view class="section-title"><view class="fa fa-arrow-trend-up"></view><text>通胀参数</text></view>
+      <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
       <view class="field">
@@ -193,8 +194,8 @@
   <!-- A段：刚性固定支出 -->
   <view class="section {{sections.expA ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="expA">
-      <text>A. 刚性固定支出</text>
-      <text class="arrow">▼</text>
+      <view class="section-title"><view class="fa fa-bolt"></view><text>A. 刚性固定支出</text></view>
+      <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
       <view class="field">
@@ -219,8 +220,8 @@
   <!-- B段：日常开销 -->
   <view class="section {{sections.expB ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="expB">
-      <text>B. 日常开销</text>
-      <text class="arrow">▼</text>
+      <view class="section-title"><view class="fa fa-basket-shopping"></view><text>B. 日常开销</text></view>
+      <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
       <view class="field">
@@ -237,8 +238,8 @@
   <!-- C段：年度大项 -->
   <view class="section {{sections.expC ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="expC">
-      <text>C. 年度大项</text>
-      <text class="arrow">▼</text>
+      <view class="section-title"><view class="fa fa-plane"></view><text>C. 年度大项</text></view>
+      <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
       <view class="field">
@@ -259,8 +260,8 @@
   <!-- D段：车贷 -->
   <view class="section {{sections.expD ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="expD">
-      <text>D. 车贷</text>
-      <text class="arrow">▼</text>
+      <view class="section-title"><view class="fa fa-car"></view><text>D. 车贷</text></view>
+      <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
       <view class="field">
@@ -285,8 +286,8 @@
   <!-- E段：住房支出 -->
   <view class="section {{sections.expE ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="expE">
-      <text>E. 住房支出</text>
-      <text class="arrow">▼</text>
+      <view class="section-title"><view class="fa fa-house"></view><text>E. 住房支出</text></view>
+      <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
       <view class="field">
@@ -319,8 +320,8 @@
   <!-- F段：其他常见支出 -->
   <view class="section {{sections.expF ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="expF">
-      <text>F. 其他常见支出</text>
-      <text class="arrow">▼</text>
+      <view class="section-title"><view class="fa fa-paw"></view><text>F. 其他常见支出</text></view>
+      <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
       <view class="field">
@@ -341,8 +342,8 @@
   <!-- G段：自定义科目 -->
   <view class="section {{sections.expG ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="expG">
-      <text>G. 自定义科目</text>
-      <text class="arrow">▼</text>
+      <view class="section-title"><view class="fa fa-circle-plus"></view><text>G. 自定义科目</text></view>
+      <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
       <view class="field">
@@ -365,8 +366,8 @@
   <!-- H段：社保/公积金 -->
   <view class="section {{sections.expH ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="expH">
-      <text>H. 社保 / 公积金</text>
-      <text class="arrow">▼</text>
+      <view class="section-title"><view class="fa fa-building-columns"></view><text>H. 社保 / 公积金</text></view>
+      <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
       <view class="field">
@@ -390,11 +391,12 @@
 
   <!-- 操作按钮 -->
   <view class="actions">
-    <button class="action-btn" hover-class="action-btn-hover" bindtap="resetAll">🔄 全部重置</button>
+    <button class="action-btn" hover-class="action-btn-hover" bindtap="resetAll"><view class="fa fa-arrows-rotate"></view>全部重置</button>
   </view>
 
   <!-- 空状态 -->
   <view wx:if="{{!hasResult}}" class="empty-state">
+    <view class="empty-icon"><view class="fa fa-chart-simple"></view></view>
     <view class="empty-title">还没有可展示的结果</view>
     <view class="empty-desc">选择一个示例场景，或填写起始年龄、目标存款与年收入，结果会自动出现在这里</view>
   </view>
@@ -414,13 +416,13 @@
       <view class="card">
         <view class="card-label">{{card1Label}}</view>
         <view class="card-value {{card1Color}}">{{card1Value}}</view>
-        <view wx:if="{{card1BadgeShow}}" class="level-badge {{card1BadgeClass}}">{{card1BadgeText}}</view>
+        <view wx:if="{{card1BadgeShow}}" class="level-badge {{card1BadgeClass}}"><view class="fa {{card1BadgeIcon}}"></view><text>{{card1BadgeText}}</text></view>
         <view class="card-sub">{{card1Sub}}</view>
       </view>
       <view class="card">
         <view class="card-label">{{card2Label}}</view>
         <view class="card-value {{card2Color}}">{{card2Value}}</view>
-        <view wx:if="{{card2BadgeShow}}" class="level-badge {{card2BadgeClass}}">{{card2BadgeText}}</view>
+        <view wx:if="{{card2BadgeShow}}" class="level-badge {{card2BadgeClass}}"><view class="fa {{card2BadgeIcon}}"></view><text>{{card2BadgeText}}</text></view>
         <view class="card-sub">{{card2Sub}}</view>
       </view>
     </view>
@@ -439,7 +441,7 @@
           <text class="index-score-unit">/100</text>
         </view>
         <view class="index-meta">
-          <view class="level-badge {{freedom.badgeClass}}">{{freedom.levelText}}</view>
+          <view class="level-badge {{freedom.badgeClass}}"><view class="fa {{freedom.badgeIcon}}"></view><text>{{freedom.levelText}}</text></view>
           <text class="index-peer">同龄人百分位 {{freedom.percentile}}</text>
         </view>
       </view>
@@ -477,28 +479,28 @@
     <!-- 图表区域 -->
     <view class="charts">
       <view class="chart-container">
-        <view class="chart-title">📈 收入 vs 支出（年度对比）</view>
+        <view class="chart-title"><view class="fa fa-chart-line"></view><text>收入 vs 支出（年度对比）</text></view>
         <view class="chart-canvas">
           <ec-canvas id="chart1" canvas-id="chart1" ec="{{ecChart1}}"></ec-canvas>
         </view>
       </view>
 
       <view class="chart-container">
-        <view class="chart-title">💸 支出结构（按类堆叠）</view>
+        <view class="chart-title"><view class="fa fa-chart-pie"></view><text>支出结构（按类堆叠）</text></view>
         <view class="chart-canvas">
           <ec-canvas id="chart2" canvas-id="chart2" ec="{{ecChart2}}"></ec-canvas>
         </view>
       </view>
 
       <view class="chart-container">
-        <view class="chart-title">💰 存款累积曲线（核心图）</view>
+        <view class="chart-title"><view class="fa fa-piggy-bank"></view><text>存款累积曲线（核心图）</text></view>
         <view class="chart-canvas tall">
           <ec-canvas id="chart3" canvas-id="chart3" ec="{{ecChart3}}"></ec-canvas>
         </view>
       </view>
 
       <view class="chart-container">
-        <view class="chart-title">📊 年度结余分解</view>
+        <view class="chart-title"><view class="fa fa-chart-column"></view><text>年度结余分解</text></view>
         <view class="chart-canvas">
           <ec-canvas id="chart4" canvas-id="chart4" ec="{{ecChart4}}"></ec-canvas>
         </view>
@@ -508,7 +510,7 @@
 
   <!-- 页脚 -->
   <view class="site-footer">
-    <view class="footer-title">🔒 隐私承诺</view>
+    <view class="footer-title"><view class="fa fa-lock"></view><text>隐私承诺</text></view>
     <view class="footer-text">纯前端工具，无服务器后台。所有数据仅保存在你的手机本地。</view>
     <view class="footer-copyright">
       © 2026 FIRE 财务自由 · 仅供参考 不构成投资建议

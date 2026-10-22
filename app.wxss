@@ -1,3 +1,5 @@
+@import "styles/fontawesome.wxss";
+
 /* app.wxss 全局样式
  *
  * 设计基准（750rpx 视口）
@@ -9,7 +11,7 @@
  */
 
 page {
-  background-color: #FBFBFB;
+  background-color: #F3F5F8;
   color: #1F2937;
   font-size: 28rpx;
   line-height: 1.6;
@@ -39,7 +41,7 @@ view, text, button, input {
   background: #FFFFFF;
   padding: 32rpx;
   border-radius: 24rpx;
-  border: 1rpx solid #ECEEF2;
+  border: 1rpx solid #E4E8F0;
 }
 
 .card-shadow {
@@ -100,6 +102,12 @@ view, text, button, input {
 }
 
 /* ===== 等级徽章 ===== */
+
+.level-badge .fa {
+  font-size: 16rpx;
+  margin-right: 6rpx;
+  color: inherit;
+}
 
 .level-badge {
   display: inline-flex;
@@ -164,7 +172,7 @@ view, text, button, input {
 
 .section {
   margin-bottom: 24rpx;
-  border: 1rpx solid #F0F1F3;
+  border: 1rpx solid #E9EDF4;
   border-radius: 16rpx;
   background: #FFFFFF;
   overflow: hidden;
@@ -178,7 +186,18 @@ view, text, button, input {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #F9FAFB;
+  background: #FFFFFF;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.section-title .fa {
+  font-size: 26rpx;
+  color: #6B7280;
 }
 
 .section-header .arrow {
@@ -194,6 +213,7 @@ view, text, button, input {
 
 .section-body {
   padding: 24rpx 32rpx 32rpx;
+  border-top: 1rpx solid #E9EDF3;
 }
 
 .section.collapsed .section-body {
@@ -205,8 +225,8 @@ view, text, button, input {
 .mode-panel {
   padding: 24rpx 32rpx;
   margin-bottom: 24rpx;
-  background: #F0F4FC;
-  border: 1rpx solid #D5DEF4;
+  background: #EBF1FC;
+  border: 1rpx solid #D2DDF3;
   border-radius: 16rpx;
 }
 
@@ -223,7 +243,8 @@ view, text, button, input {
 }
 
 .preset-btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   vertical-align: top;
   padding: 16rpx 24rpx;
   margin-right: 12rpx;
@@ -239,6 +260,12 @@ view, text, button, input {
 
 .preset-btn:last-child {
   margin-right: 0;
+}
+
+.preset-btn .fa {
+  font-size: 26rpx;
+  margin-right: 8rpx;
+  color: inherit;
 }
 
 .preset-btn.active {
@@ -282,7 +309,7 @@ view, text, button, input {
 
 .mode-tabs {
   display: flex;
-  background: #F3F4F6;
+  background: #E6EAF1;
   border-radius: 12rpx;
   padding: 4rpx;
   margin-bottom: 24rpx;
@@ -355,14 +382,22 @@ view, text, button, input {
   background: #FFFFFF;
   padding: 32rpx;
   border-radius: 24rpx;
-  border: 1rpx solid #ECEEF2;
+  border: 1rpx solid #E4E8F0;
 }
 
 .chart-title {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
   font-size: 26rpx;
   font-weight: 600;
   color: #374151;
   margin-bottom: 20rpx;
+}
+
+.chart-title .fa {
+  font-size: 28rpx;
+  color: #6B7280;
 }
 
 .chart-canvas {
@@ -400,6 +435,7 @@ view, text, button, input {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8rpx;
   background: #FFFFFF;
   color: #192E7E;
   border: 1rpx solid #C3CDEE;
@@ -423,8 +459,14 @@ view, text, button, input {
   padding: 56rpx 40rpx;
   text-align: center;
   background: #FFFFFF;
-  border: 1rpx solid #F0F1F3;
+  border: 1rpx solid #E9EDF4;
   border-radius: 24rpx;
+}
+
+.empty-icon {
+  font-size: 56rpx;
+  color: #C7CDD8;
+  margin-bottom: 16rpx;
 }
 
 .empty-title {

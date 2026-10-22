@@ -95,7 +95,8 @@ const PEER_DISTRIBUTION = {
 const PRESETS = {
   freshgrad: {
     key: 'freshgrad',
-    label: '🎓 22岁应届生·一线起步',
+    label: '22岁应届生·一线起步',
+    icon: 'fa-graduation-cap',
     description: '月薪8k，租房通勤，想35岁不被迫上班',
     startAge: 22, endAge: 35, initial: 2, target: 100,
     incomeStart: 9.6, growthRate: 15, growthYears: 5,
@@ -107,7 +108,8 @@ const PRESETS = {
   },
   junior: {
     key: 'junior',
-    label: '💼 25岁初入职场·攒首付',
+    label: '25岁初入职场·攒首付',
+    icon: 'fa-briefcase',
     description: '二线城市单身，目标30岁付50万首付',
     startAge: 25, endAge: 31, initial: 10, target: 50,
     incomeStart: 18, growthRate: 10, growthYears: 4,
@@ -119,7 +121,8 @@ const PRESETS = {
   },
   dink: {
     key: 'dink',
-    label: '💑 28岁筹备婚礼·DINK',
+    label: '28岁筹备婚礼·DINK',
+    icon: 'fa-heart',
     description: '双职工合计月入3w，准备结婚买房',
     startAge: 28, endAge: 36, initial: 50, target: 260,
     incomeStart: 42, growthRate: 8, growthYears: 5,
@@ -131,7 +134,8 @@ const PRESETS = {
   },
   prebaby: {
     key: 'prebaby',
-    label: '🍼 30岁备孕·育儿前夜',
+    label: '30岁备孕·育儿前夜',
+    icon: 'fa-baby',
     description: '准备一胎，评估育儿成本',
     startAge: 30, endAge: 42, initial: 80, target: 420,
     incomeStart: 48, growthRate: 6, growthYears: 5,
@@ -144,7 +148,8 @@ const PRESETS = {
   },
   parent33: {
     key: 'parent33',
-    label: '👶 33岁有娃·育儿压力',
+    label: '33岁有娃·育儿压力',
+    icon: 'fa-child',
     description: '一线城市育儿，目标50岁财务自由',
     startAge: 33, endAge: 50, initial: 120, target: 700,
     incomeStart: 60, growthRate: 5, growthYears: 5,
@@ -156,7 +161,8 @@ const PRESETS = {
   },
   mortgage35: {
     key: 'mortgage35',
-    label: '🏠 35岁房贷重担·月供1.5w',
+    label: '35岁房贷重担·月供1.5w',
+    icon: 'fa-house',
     description: '兼顾娃和退休',
     startAge: 35, endAge: 55, initial: 150, target: 650,
     incomeStart: 66, growthRate: 4, growthYears: 5,
@@ -168,7 +174,8 @@ const PRESETS = {
   },
   transition36: {
     key: 'transition36',
-    label: '🚀 36岁中年转型·副业筹划',
+    label: '36岁中年转型·副业筹划',
+    icon: 'fa-rocket',
     description: '想46岁前实现职业自主',
     startAge: 36, endAge: 46, initial: 100, target: 500,
     incomeStart: 17.5, growthRate: 3, growthYears: 10,
@@ -179,7 +186,8 @@ const PRESETS = {
   },
   parent42: {
     key: 'parent42',
-    label: '👨‍👩‍👧‍👦 42岁双娃父母·教育金压力',
+    label: '42岁双娃父母·教育金压力',
+    icon: 'fa-children',
     description: '教育 + 自我养老双重压力',
     startAge: 42, endAge: 57, initial: 300, target: 1000,
     incomeStart: 78, growthRate: 3, growthYears: 5,
@@ -191,7 +199,8 @@ const PRESETS = {
   },
   exec48: {
     key: 'exec48',
-    label: '💎 48岁高管·收入高峰',
+    label: '48岁高管·收入高峰',
+    icon: 'fa-gem',
     description: '想55岁全身而退',
     startAge: 48, endAge: 56, initial: 800, target: 1500,
     incomeStart: 132, growthRate: 5, growthYears: 3,
@@ -202,7 +211,8 @@ const PRESETS = {
   },
   preretire52: {
     key: 'preretire52',
-    label: '🎯 52岁临退休·最后冲刺',
+    label: '52岁临退休·最后冲刺',
+    icon: 'fa-bullseye',
     description: '还有8年，最大化养老积累',
     startAge: 52, endAge: 60, initial: 400, target: 800,
     incomeStart: 48, growthRate: 0, growthYears: 1,
@@ -256,13 +266,13 @@ function formatMoney(w) {
 // 评估收益率等级
 function assessRate(rate) {
   const r = rate * 100;
-  if (r < 0) return { level: '已超达', badge: 'level-green', emoji: '🎉', hint: '当前本金贡献已超过目标，无需依赖投资增值，可考虑提高生活质量或调高目标' };
-  if (r < 3) return { level: '极容易', badge: 'level-green', emoji: '🟢', hint: '货基/银行理财即可达成，目标定得保守，可以更野心一点' };
-  if (r < 6) return { level: '适中', badge: 'level-green', emoji: '🟢', hint: '国债/股债平衡型可达，比较稳健的目标' };
-  if (r < 10) return { level: '有挑战', badge: 'level-yellow', emoji: '🟡', hint: '略高于股市长期平均（7-8%），需要积极的资产配置，考虑增加权益类占比' };
-  if (r < 15) return { level: '困难', badge: 'level-orange', emoji: '🟠', hint: '需要较强的投资能力 + 风险承受度，建议同步降低目标或延长达成年限' };
-  if (r < 25) return { level: '极难', badge: 'level-red', emoji: '🔴', hint: '仅顶级投资者长期可达，强烈建议调整：降目标 / 延后年龄 / 增收 / 降支' };
-  return { level: '不现实', badge: 'level-red', emoji: '❌', hint: '当前现金流无法支撑目标，需要根本性调整规划' };
+  if (r < 0) return { level: '已超达', badge: 'level-green', icon: 'fa-circle-check', hint: '当前本金贡献已超过目标，无需依赖投资增值，可考虑提高生活质量或调高目标' };
+  if (r < 3) return { level: '极容易', badge: 'level-green', icon: 'fa-circle', hint: '货基/银行理财即可达成，目标定得保守，可以更野心一点' };
+  if (r < 6) return { level: '适中', badge: 'level-green', icon: 'fa-circle', hint: '国债/股债平衡型可达，比较稳健的目标' };
+  if (r < 10) return { level: '有挑战', badge: 'level-yellow', icon: 'fa-circle', hint: '略高于股市长期平均（7-8%），需要积极的资产配置，考虑增加权益类占比' };
+  if (r < 15) return { level: '困难', badge: 'level-orange', icon: 'fa-circle', hint: '需要较强的投资能力 + 风险承受度，建议同步降低目标或延长达成年限' };
+  if (r < 25) return { level: '极难', badge: 'level-red', icon: 'fa-circle', hint: '仅顶级投资者长期可达，强烈建议调整：降目标 / 延后年龄 / 增收 / 降支' };
+  return { level: '不现实', badge: 'level-red', icon: 'fa-circle-xmark', hint: '当前现金流无法支撑目标，需要根本性调整规划' };
 }
 
 // 正态分布累积概率
@@ -518,11 +528,11 @@ const ADVICE_HINTS = {
 
 // 总分等级
 function scoreLevel(total) {
-  if (total >= 85) return { text: '🟢 优秀', tone: 'green', badgeClass: 'level-green' };
-  if (total >= 70) return { text: '🟢 良好', tone: 'green', badgeClass: 'level-green' };
-  if (total >= 55) return { text: '🟡 中等', tone: 'yellow', badgeClass: 'level-yellow' };
-  if (total >= 40) return { text: '🟠 偏弱', tone: 'orange', badgeClass: 'level-orange' };
-  return { text: '🔴 待改善', tone: 'red', badgeClass: 'level-red' };
+  if (total >= 85) return { text: '优秀', tone: 'green', badgeClass: 'level-green', icon: 'fa-circle' };
+  if (total >= 70) return { text: '良好', tone: 'green', badgeClass: 'level-green', icon: 'fa-circle' };
+  if (total >= 55) return { text: '中等', tone: 'yellow', badgeClass: 'level-yellow', icon: 'fa-circle' };
+  if (total >= 40) return { text: '偏弱', tone: 'orange', badgeClass: 'level-orange', icon: 'fa-circle' };
+  return { text: '待改善', tone: 'red', badgeClass: 'level-red', icon: 'fa-circle' };
 }
 
 // 单维度配色
@@ -669,6 +679,7 @@ Page({
       tone: 'gray',
       badgeClass: 'level-gray',
       levelText: '',
+      badgeIcon: 'fa-circle',
       dims: [],
       strength: '',
       weakness: '',
@@ -681,6 +692,7 @@ Page({
     const presetList = Object.values(PRESETS).map(p => ({
       key: p.key,
       label: p.label,
+      icon: p.icon,
     }));
     this.setData({
       presets: presetList,
@@ -1137,8 +1149,8 @@ Page({
     let resultMeta = null;
     let card1Label, card1Value, card1Color, card1Sub;
     let card2Label, card2Value, card2Color, card2Sub;
-    let card1BadgeShow = false, card1BadgeClass = '', card1BadgeText = '';
-    let card2BadgeShow = false, card2BadgeClass = '', card2BadgeText = '';
+    let card1BadgeShow = false, card1BadgeClass = '', card1BadgeText = '', card1BadgeIcon = 'fa-circle';
+    let card2BadgeShow = false, card2BadgeClass = '', card2BadgeText = '', card2BadgeIcon = 'fa-circle';
     let mainTitle;
 
     if (this.data.currentMode === 'A') {
@@ -1154,7 +1166,7 @@ Page({
       if (p.target <= 0) {
         card1Sub = '请设置目标存款金额';
       } else if (r <= 0) {
-        card1Sub = '你自己存的钱已超过目标，不用靠投资了 🎉';
+        card1Sub = '你自己存的钱已超过目标，不用靠投资了';
       } else if (r < 0.05) {
         card1Sub = '稳健债基即可覆盖';
       } else if (r < 0.07) {
@@ -1184,7 +1196,7 @@ Page({
         card2Color = 'gray';
         card2Sub = '请先设置目标存款金额';
       } else if (gap <= 0) {
-        card2Value = '已达标 🎉';
+        card2Value = '已达标';
         card2Color = 'green';
         card2Sub = `光靠自己存 ${formatMoney(principalContrib)} 就超过目标 ${formatMoney(p.target)}，不用靠投资`;
       } else {
@@ -1201,7 +1213,8 @@ Page({
         const a = assessRate(r);
         card1BadgeShow = true;
         card1BadgeClass = a.badge;
-        card1BadgeText = a.emoji + ' ' + a.level;
+        card1BadgeText = a.level;
+        card1BadgeIcon = a.icon;
         card1Sub = a.hint;
         if (p.inflationRate > 0 && r > 0) {
           const realRate = r - p.inflationRate;
@@ -1214,10 +1227,12 @@ Page({
         card2BadgeShow = true;
         if (gap <= 0) {
           card2BadgeClass = 'level-green';
-          card2BadgeText = '🎉 超额';
+          card2BadgeIcon = 'fa-circle-check';
+          card2BadgeText = '超额';
         } else {
           card2BadgeClass = 'level-gray';
-          card2BadgeText = '📊 缺口';
+          card2BadgeIcon = 'fa-arrow-trend-down';
+          card2BadgeText = '缺口';
           card2Sub += ` · 每月需多存 ¥${monthlyExtra.toLocaleString()}`;
         }
       }
@@ -1267,23 +1282,25 @@ Page({
       // 徽章
       if (p.target > 0) {
         const ratio2 = finalMain / p.target;
-        let badge, emoji, label, hint;
+        let badge, icon, label, hint;
         if (ratio2 >= 1) {
-          badge = 'level-green'; emoji = '🎉'; label = '超达成'; hint = '恭喜，你的规划已超出目标';
+          badge = 'level-green'; icon = 'fa-circle-check'; label = '超达成'; hint = '恭喜，你的规划已超出目标';
         } else if (ratio2 >= 0.85) {
-          badge = 'level-yellow'; emoji = '🟡'; label = '接近'; hint = '距目标差一点点，可适度增加权益类配置或调整月支出';
+          badge = 'level-yellow'; icon = 'fa-circle'; label = '接近'; hint = '距目标差一点点，可适度增加权益类配置或调整月支出';
         } else {
-          badge = 'level-red'; emoji = '🔴'; label = '差距大'; hint = '当前收益率下达不到目标，需要更高储蓄率、更长时间或重新评估目标';
+          badge = 'level-red'; icon = 'fa-circle'; label = '差距大'; hint = '当前收益率下达不到目标，需要更高储蓄率、更长时间或重新评估目标';
         }
         card1BadgeShow = true;
         card1BadgeClass = badge;
-        card1BadgeText = emoji + ' ' + label;
+        card1BadgeText = label;
+        card1BadgeIcon = icon;
         card1Sub += ' · ' + hint;
       }
       
       card2BadgeShow = true;
       card2BadgeClass = 'level-gray';
-      card2BadgeText = '📊 结构';
+      card2BadgeIcon = 'fa-chart-pie';
+      card2BadgeText = '结构';
     }
 
     // 计算财务自由指数（未设目标时分数含义不成立，直接不展示）
@@ -1298,9 +1315,9 @@ Page({
       mainTitle,
       timeline,
       card1Label, card1Value, card1Color, card1Sub,
-      card1BadgeShow, card1BadgeClass, card1BadgeText,
+      card1BadgeShow, card1BadgeClass, card1BadgeText, card1BadgeIcon,
       card2Label, card2Value, card2Color, card2Sub,
-      card2BadgeShow, card2BadgeClass, card2BadgeText,
+      card2BadgeShow, card2BadgeClass, card2BadgeText, card2BadgeIcon,
       freedom,
     }, () => {
       // 等 wx:if 内的 canvas 挂载完成再渲染，否则首次计算取不到组件
@@ -1328,6 +1345,7 @@ Page({
       tone: level.tone,
       badgeClass: level.badgeClass,
       levelText: level.text,
+      badgeIcon: level.icon,
       dims: dims,
       strength: insights.strength,
       weakness: insights.weakness,
