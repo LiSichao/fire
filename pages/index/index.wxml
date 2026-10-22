@@ -1,5 +1,5 @@
 <!--pages/index/index.wxml-->
-<view class="container">
+<view class="container" bindtouchstart="onPageTouchStart">
 
   <!-- 顶部主视觉 -->
   <view class="page-hero">
@@ -17,6 +17,8 @@
         wx:for="{{presets}}" 
         wx:key="key"
         class="preset-btn {{currentPreset === item.key ? 'active' : ''}}"
+        hover-class="preset-btn-hover"
+        hover-stay-time="80"
         bindtap="applyPreset"
         data-key="{{item.key}}"
       >
@@ -27,11 +29,11 @@
 
   <!-- 计算模式切换 -->
   <view class="mode-tabs">
-    <view class="mode-tab {{currentMode === 'A' ? 'active' : ''}}" bindtap="setMode" data-mode="A">
+    <view class="mode-tab {{currentMode === 'A' ? 'active' : ''}}" hover-class="mode-tab-hover" bindtap="setMode" data-mode="A">
       <text class="mode-tab-title">推算收益率</text>
       <text class="mode-tab-sub">知道月存款 → 看需要多少%</text>
     </view>
-    <view class="mode-tab {{currentMode === 'B' ? 'active' : ''}}" bindtap="setMode" data-mode="B">
+    <view class="mode-tab {{currentMode === 'B' ? 'active' : ''}}" hover-class="mode-tab-hover" bindtap="setMode" data-mode="B">
       <text class="mode-tab-title">推算最终存款</text>
       <text class="mode-tab-sub">知道收益率 → 看 N 年后能存多少</text>
     </view>
@@ -39,52 +41,50 @@
 
   <!-- 模式A面板：推算收益率 -->
   <block wx:if="{{currentMode === 'A'}}">
-    <view class="section">
-      <view class="section-body">
-        <view class="field">
-          <view class="field-label">目标存款 (万元)</view>
-          <input 
-            class="field-input" 
-            type="digit" 
-            value="{{inputText.target}}" 
-            bindinput="onInput" bindblur="onInputBlur"
-            data-field="target"
-            placeholder="0"
-          />
-        </view>
+    <view class="mode-panel">
+      <view class="field">
+        <view class="field-label">目标存款 (万元)</view>
+        <input 
+          class="field-input {{focusField === 'target' ? 'is-focus' : ''}}" 
+          type="digit" 
+          value="{{inputText.target}}" 
+          bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur"
+          data-field="target"
+          placeholder="0"
+        />
       </view>
     </view>
   </block>
 
   <!-- 模式B面板：推算最终存款 -->
   <block wx:if="{{currentMode === 'B'}}">
-    <view class="section">
-      <view class="section-body">
-        <view class="slider-block">
-          <view class="field-label">你预期每年能赚多少？（年化收益率）</view>
-          <view class="slider-value">{{rateDisplay}}%</view>
-          <slider 
-            min="0" 
-            max="15" 
-            step="0.01" 
-            value="{{params.mainRate}}" 
-            bindchanging="onMainRateChanging"
-            bindchange="onMainRateChange"
-            activeColor="#6366F1"
-            backgroundColor="#E5E7EB"
-          />
-        </view>
-        <view class="field-label">想同时看看别的收益率？（可多选对比）</view>
-        <view class="compare-rates">
-          <view 
-            wx:for="{{compareRateOptions}}" 
-            wx:key="value"
-            class="compare-rate-item {{params.compareRates[item.value] ? 'checked' : ''}}"
-            bindtap="toggleCompareRate"
-            data-rate="{{item.value}}"
-          >
-            {{item.value}}%
-          </view>
+    <view class="mode-panel">
+      <view class="slider-block">
+        <view class="field-label">你预期每年能赚多少？（年化收益率）</view>
+        <view class="slider-value">{{rateDisplay}}%</view>
+        <slider 
+          min="0" 
+          max="15" 
+          step="0.01" 
+          value="{{params.mainRate}}" 
+          bindchanging="onMainRateChanging"
+          bindchange="onMainRateChange"
+          activeColor="#2E449C"
+          backgroundColor="#E5E7EB"
+        />
+      </view>
+      <view class="field-label">想同时看看别的收益率？（可多选对比）</view>
+      <view class="compare-rates">
+        <view 
+          wx:for="{{compareRateOptions}}" 
+          wx:key="value"
+          class="compare-rate-item {{params.compareRates[item.value] ? 'checked' : ''}}"
+          hover-class="compare-rate-hover"
+          hover-stay-time="80"
+          bindtap="toggleCompareRate"
+          data-rate="{{item.value}}"
+        >
+          {{item.value}}%
         </view>
       </view>
     </view>
@@ -100,30 +100,30 @@
       <view class="field">
         <view class="field-label">起始年龄</view>
         <input 
-          class="field-input" 
+          class="field-input {{focusField === 'startAge' ? 'is-focus' : ''}}" 
           type="number" 
           value="{{inputText.startAge}}" 
-          bindinput="onInput" bindblur="onInputBlur"
+          bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur"
           data-field="startAge"
         />
       </view>
       <view class="field">
         <view class="field-label">目标年龄</view>
         <input 
-          class="field-input" 
+          class="field-input {{focusField === 'endAge' ? 'is-focus' : ''}}" 
           type="number" 
           value="{{inputText.endAge}}" 
-          bindinput="onInput" bindblur="onInputBlur"
+          bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur"
           data-field="endAge"
         />
       </view>
       <view class="field">
         <view class="field-label">初始本金 (万元)</view>
         <input 
-          class="field-input" 
+          class="field-input {{focusField === 'initial' ? 'is-focus' : ''}}" 
           type="digit" 
           value="{{inputText.initial}}" 
-          bindinput="onInput" bindblur="onInputBlur"
+          bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur"
           data-field="initial"
         />
       </view>
@@ -140,30 +140,30 @@
       <view class="field">
         <view class="field-label">起始年收入 (万元/年)</view>
         <input 
-          class="field-input" 
+          class="field-input {{focusField === 'incomeStart' ? 'is-focus' : ''}}" 
           type="digit" 
           value="{{inputText.incomeStart}}" 
-          bindinput="onInput" bindblur="onInputBlur"
+          bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur"
           data-field="incomeStart"
         />
       </view>
       <view class="field">
         <view class="field-label">年增长率 (%)</view>
         <input 
-          class="field-input" 
+          class="field-input {{focusField === 'growthRate' ? 'is-focus' : ''}}" 
           type="digit" 
           value="{{inputText.growthRate}}" 
-          bindinput="onInput" bindblur="onInputBlur"
+          bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur"
           data-field="growthRate"
         />
       </view>
       <view class="field">
         <view class="field-label">增长持续年数（含起始年）</view>
         <input 
-          class="field-input" 
+          class="field-input {{focusField === 'growthYears' ? 'is-focus' : ''}}" 
           type="number" 
           value="{{inputText.growthYears}}" 
-          bindinput="onInput" bindblur="onInputBlur"
+          bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur"
           data-field="growthYears"
         />
       </view>
@@ -180,10 +180,10 @@
       <view class="field">
         <view class="field-label">年通胀率 (%)</view>
         <input 
-          class="field-input" 
+          class="field-input {{focusField === 'inflationRate' ? 'is-focus' : ''}}" 
           type="digit" 
           value="{{inputText.inflationRate}}" 
-          bindinput="onInput" bindblur="onInputBlur"
+          bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur"
           data-field="inflationRate"
         />
       </view>
@@ -199,19 +199,19 @@
     <view class="section-body">
       <view class="field">
         <view class="field-label">水电费 (元/月)</view>
-        <input class="field-input" type="digit" value="{{inputText.utilities}}" bindinput="onInput" bindblur="onInputBlur" data-field="utilities" />
+        <input class="field-input {{focusField === 'utilities' ? 'is-focus' : ''}}" type="digit" value="{{inputText.utilities}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="utilities" />
       </view>
       <view class="field">
         <view class="field-label">充电/燃油 (元/月)</view>
-        <input class="field-input" type="digit" value="{{inputText.charging}}" bindinput="onInput" bindblur="onInputBlur" data-field="charging" />
+        <input class="field-input {{focusField === 'charging' ? 'is-focus' : ''}}" type="digit" value="{{inputText.charging}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="charging" />
       </view>
       <view class="field">
         <view class="field-label">停车费 (元/月)</view>
-        <input class="field-input" type="digit" value="{{inputText.parking}}" bindinput="onInput" bindblur="onInputBlur" data-field="parking" />
+        <input class="field-input {{focusField === 'parking' ? 'is-focus' : ''}}" type="digit" value="{{inputText.parking}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="parking" />
       </view>
       <view class="field">
         <view class="field-label">宽带 + 通讯 (元/年)</view>
-        <input class="field-input" type="digit" value="{{inputText.broadband}}" bindinput="onInput" bindblur="onInputBlur" data-field="broadband" />
+        <input class="field-input {{focusField === 'broadband' ? 'is-focus' : ''}}" type="digit" value="{{inputText.broadband}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="broadband" />
       </view>
     </view>
   </view>
@@ -225,11 +225,11 @@
     <view class="section-body">
       <view class="field">
         <view class="field-label">每人每月 (元)</view>
-        <input class="field-input" type="digit" value="{{inputText.dailyPerPerson}}" bindinput="onInput" bindblur="onInputBlur" data-field="dailyPerPerson" />
+        <input class="field-input {{focusField === 'dailyPerPerson' ? 'is-focus' : ''}}" type="digit" value="{{inputText.dailyPerPerson}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="dailyPerPerson" />
       </view>
       <view class="field">
         <view class="field-label">人数</view>
-        <input class="field-input" type="number" value="{{inputText.dailyPersons}}" bindinput="onInput" bindblur="onInputBlur" data-field="dailyPersons" />
+        <input class="field-input {{focusField === 'dailyPersons' ? 'is-focus' : ''}}" type="number" value="{{inputText.dailyPersons}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="dailyPersons" />
       </view>
     </view>
   </view>
@@ -243,15 +243,15 @@
     <view class="section-body">
       <view class="field">
         <view class="field-label">孝亲费 (万元/年)</view>
-        <input class="field-input" type="digit" value="{{inputText.filial}}" bindinput="onInput" bindblur="onInputBlur" data-field="filial" />
+        <input class="field-input {{focusField === 'filial' ? 'is-focus' : ''}}" type="digit" value="{{inputText.filial}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="filial" />
       </view>
       <view class="field">
         <view class="field-label">旅游 (万元/人/年)</view>
-        <input class="field-input" type="digit" value="{{inputText.travelPerPerson}}" bindinput="onInput" bindblur="onInputBlur" data-field="travelPerPerson" />
+        <input class="field-input {{focusField === 'travelPerPerson' ? 'is-focus' : ''}}" type="digit" value="{{inputText.travelPerPerson}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="travelPerPerson" />
       </view>
       <view class="field">
         <view class="field-label">旅游人数</view>
-        <input class="field-input" type="number" value="{{inputText.travelPersons}}" bindinput="onInput" bindblur="onInputBlur" data-field="travelPersons" />
+        <input class="field-input {{focusField === 'travelPersons' ? 'is-focus' : ''}}" type="number" value="{{inputText.travelPersons}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="travelPersons" />
       </view>
     </view>
   </view>
@@ -265,19 +265,19 @@
     <view class="section-body">
       <view class="field">
         <view class="field-label">月供 (元)</view>
-        <input class="field-input" type="digit" value="{{inputText.carMonthly}}" bindinput="onInput" bindblur="onInputBlur" data-field="carMonthly" />
+        <input class="field-input {{focusField === 'carMonthly' ? 'is-focus' : ''}}" type="digit" value="{{inputText.carMonthly}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="carMonthly" />
       </view>
       <view class="field">
         <view class="field-label">起始年份</view>
-        <input class="field-input" type="number" value="{{inputText.carStartYear}}" bindinput="onInput" bindblur="onInputBlur" data-field="carStartYear" />
+        <input class="field-input {{focusField === 'carStartYear' ? 'is-focus' : ''}}" type="number" value="{{inputText.carStartYear}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="carStartYear" />
       </view>
       <view class="field">
         <view class="field-label">结束年</view>
-        <input class="field-input" type="number" value="{{inputText.carEndYear}}" bindinput="onInput" bindblur="onInputBlur" data-field="carEndYear" />
+        <input class="field-input {{focusField === 'carEndYear' ? 'is-focus' : ''}}" type="number" value="{{inputText.carEndYear}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="carEndYear" />
       </view>
       <view class="field">
         <view class="field-label">结束月份</view>
-        <input class="field-input" type="number" value="{{inputText.carEndMonth}}" bindinput="onInput" bindblur="onInputBlur" data-field="carEndMonth" />
+        <input class="field-input {{focusField === 'carEndMonth' ? 'is-focus' : ''}}" type="number" value="{{inputText.carEndMonth}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="carEndMonth" />
       </view>
     </view>
   </view>
@@ -291,27 +291,27 @@
     <view class="section-body">
       <view class="field">
         <view class="field-label">房贷月供 (元/月)</view>
-        <input class="field-input" type="digit" value="{{inputText.mortgageMonthly}}" bindinput="onInput" bindblur="onInputBlur" data-field="mortgageMonthly" />
+        <input class="field-input {{focusField === 'mortgageMonthly' ? 'is-focus' : ''}}" type="digit" value="{{inputText.mortgageMonthly}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="mortgageMonthly" />
       </view>
       <view class="field">
         <view class="field-label">房贷起始年份</view>
-        <input class="field-input" type="number" value="{{inputText.mortgageStartYear}}" bindinput="onInput" bindblur="onInputBlur" data-field="mortgageStartYear" />
+        <input class="field-input {{focusField === 'mortgageStartYear' ? 'is-focus' : ''}}" type="number" value="{{inputText.mortgageStartYear}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="mortgageStartYear" />
       </view>
       <view class="field">
         <view class="field-label">房贷结束年</view>
-        <input class="field-input" type="number" value="{{inputText.mortgageEndYear}}" bindinput="onInput" bindblur="onInputBlur" data-field="mortgageEndYear" />
+        <input class="field-input {{focusField === 'mortgageEndYear' ? 'is-focus' : ''}}" type="number" value="{{inputText.mortgageEndYear}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="mortgageEndYear" />
       </view>
       <view class="field">
         <view class="field-label">房贷结束月份</view>
-        <input class="field-input" type="number" value="{{inputText.mortgageEndMonth}}" bindinput="onInput" bindblur="onInputBlur" data-field="mortgageEndMonth" />
+        <input class="field-input {{focusField === 'mortgageEndMonth' ? 'is-focus' : ''}}" type="number" value="{{inputText.mortgageEndMonth}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="mortgageEndMonth" />
       </view>
       <view class="field">
         <view class="field-label">房租 (元/月)</view>
-        <input class="field-input" type="digit" value="{{inputText.rent}}" bindinput="onInput" bindblur="onInputBlur" data-field="rent" />
+        <input class="field-input {{focusField === 'rent' ? 'is-focus' : ''}}" type="digit" value="{{inputText.rent}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="rent" />
       </view>
       <view class="field">
         <view class="field-label">物业费 (元/月)</view>
-        <input class="field-input" type="digit" value="{{inputText.propertyFee}}" bindinput="onInput" bindblur="onInputBlur" data-field="propertyFee" />
+        <input class="field-input {{focusField === 'propertyFee' ? 'is-focus' : ''}}" type="digit" value="{{inputText.propertyFee}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="propertyFee" />
       </view>
     </view>
   </view>
@@ -325,15 +325,15 @@
     <view class="section-body">
       <view class="field">
         <view class="field-label">宠物 (元/月)</view>
-        <input class="field-input" type="digit" value="{{inputText.petMonthly}}" bindinput="onInput" bindblur="onInputBlur" data-field="petMonthly" />
+        <input class="field-input {{focusField === 'petMonthly' ? 'is-focus' : ''}}" type="digit" value="{{inputText.petMonthly}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="petMonthly" />
       </view>
       <view class="field">
         <view class="field-label">子女教育 (万元/年)</view>
-        <input class="field-input" type="digit" value="{{inputText.education}}" bindinput="onInput" bindblur="onInputBlur" data-field="education" />
+        <input class="field-input {{focusField === 'education' ? 'is-focus' : ''}}" type="digit" value="{{inputText.education}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="education" />
       </view>
       <view class="field">
         <view class="field-label">商业保险/医疗 (万元/年)</view>
-        <input class="field-input" type="digit" value="{{inputText.insurance}}" bindinput="onInput" bindblur="onInputBlur" data-field="insurance" />
+        <input class="field-input {{focusField === 'insurance' ? 'is-focus' : ''}}" type="digit" value="{{inputText.insurance}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="insurance" />
       </view>
     </view>
   </view>
@@ -348,15 +348,15 @@
       <view class="field">
         <view class="field-label">科目 1</view>
         <view class="custom-row">
-          <input class="field-input" type="text" value="{{params.custom1Name}}" bindinput="onInput" data-field="custom1Name" placeholder="名称（如 健身房）" />
-          <input class="field-input" type="digit" value="{{inputText.custom1Amount}}" bindinput="onInput" bindblur="onInputBlur" data-field="custom1Amount" placeholder="元/月" />
+          <input class="field-input {{focusField === 'custom1Name' ? 'is-focus' : ''}}" type="text" value="{{params.custom1Name}}" bindinput="onInput" bindblur="onInputBlur" bindfocus="onInputFocus" data-field="custom1Name" placeholder="名称（如 健身房）" />
+          <input class="field-input {{focusField === 'custom1Amount' ? 'is-focus' : ''}}" type="digit" value="{{inputText.custom1Amount}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="custom1Amount" placeholder="元/月" />
         </view>
       </view>
       <view class="field">
         <view class="field-label">科目 2</view>
         <view class="custom-row">
-          <input class="field-input" type="text" value="{{params.custom2Name}}" bindinput="onInput" data-field="custom2Name" placeholder="名称（如 兴趣班）" />
-          <input class="field-input" type="digit" value="{{inputText.custom2Amount}}" bindinput="onInput" bindblur="onInputBlur" data-field="custom2Amount" placeholder="元/月" />
+          <input class="field-input {{focusField === 'custom2Name' ? 'is-focus' : ''}}" type="text" value="{{params.custom2Name}}" bindinput="onInput" bindblur="onInputBlur" bindfocus="onInputFocus" data-field="custom2Name" placeholder="名称（如 兴趣班）" />
+          <input class="field-input {{focusField === 'custom2Amount' ? 'is-focus' : ''}}" type="digit" value="{{inputText.custom2Amount}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="custom2Amount" placeholder="元/月" />
         </view>
       </view>
     </view>
@@ -371,31 +371,37 @@
     <view class="section-body">
       <view class="field">
         <view class="field-label">公积金月缴（个人+公司合计，元/月）</view>
-        <input class="field-input" type="digit" value="{{inputText.housingFundMonthly}}" bindinput="onInput" bindblur="onInputBlur" data-field="housingFundMonthly" />
+        <input class="field-input {{focusField === 'housingFundMonthly' ? 'is-focus' : ''}}" type="digit" value="{{inputText.housingFundMonthly}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="housingFundMonthly" />
       </view>
       <view class="field">
         <view class="field-label">社保月缴（个人部分，元/月）</view>
-        <input class="field-input" type="digit" value="{{inputText.socialSecurityMonthly}}" bindinput="onInput" bindblur="onInputBlur" data-field="socialSecurityMonthly" />
+        <input class="field-input {{focusField === 'socialSecurityMonthly' ? 'is-focus' : ''}}" type="digit" value="{{inputText.socialSecurityMonthly}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="socialSecurityMonthly" />
       </view>
       <view class="field">
         <view class="field-label">公积金可用比例 (%)</view>
-        <input class="field-input" type="digit" value="{{inputText.housingFundUsableRate}}" bindinput="onInput" bindblur="onInputBlur" data-field="housingFundUsableRate" />
+        <input class="field-input {{focusField === 'housingFundUsableRate' ? 'is-focus' : ''}}" type="digit" value="{{inputText.housingFundUsableRate}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="housingFundUsableRate" />
       </view>
       <view class="field">
         <view class="field-label">社保转养老金可计入比例 (%)</view>
-        <input class="field-input" type="digit" value="{{inputText.socialToRetirementRate}}" bindinput="onInput" bindblur="onInputBlur" data-field="socialToRetirementRate" />
+        <input class="field-input {{focusField === 'socialToRetirementRate' ? 'is-focus' : ''}}" type="digit" value="{{inputText.socialToRetirementRate}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="socialToRetirementRate" />
       </view>
     </view>
   </view>
 
   <!-- 操作按钮 -->
   <view class="actions">
-    <button class="action-btn" bindtap="resetAll">🔄 全部重置</button>
+    <button class="action-btn" hover-class="action-btn-hover" bindtap="resetAll">🔄 全部重置</button>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{!hasResult}}" class="empty-state">
+    <view class="empty-title">还没有可展示的结果</view>
+    <view class="empty-desc">选择一个示例场景，或填写起始年龄、目标存款与年收入，结果会自动出现在这里</view>
   </view>
 
   <!-- 结果展示区域 -->
   <block wx:if="{{hasResult}}">
-    <view class="card-shadow">
+    <view class="card result-head">
       <view class="card-header">
         <view class="decorator"></view>
         <text class="card-title-text">{{mainTitle}}</text>
@@ -502,10 +508,8 @@
 
   <!-- 页脚 -->
   <view class="site-footer">
-    <view class="footer-section">
-      <view class="footer-title">🔒 隐私承诺</view>
-      <view class="footer-text">纯前端工具，无服务器后台。所有数据仅保存在你的手机本地。</view>
-    </view>
+    <view class="footer-title">🔒 隐私承诺</view>
+    <view class="footer-text">纯前端工具，无服务器后台。所有数据仅保存在你的手机本地。</view>
     <view class="footer-copyright">
       © 2026 FIRE 财务自由 · 仅供参考 不构成投资建议
     </view>

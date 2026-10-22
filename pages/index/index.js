@@ -13,7 +13,7 @@ const COLORS = {
   expF: '#EC4899',
   expG: '#14B8A6',
   savings: '#059669',
-  indigo: '#6366F1',
+  indigo: '#2E449C',
   target: '#DC2626',
 };
 
@@ -558,6 +558,9 @@ Page({
     // 滑块实时显示值：拖动时更新，松手才写入 params 并重算
     rateDisplay: 0,
 
+    // 当前聚焦的输入框（用于高亮描边）
+    focusField: '',
+
     // 数字输入框的原始文本（保留 "1." 等中间态，避免输入被改写）
     inputText: {},
     
@@ -748,9 +751,28 @@ Page({
     this._debounceRecalc();
   },
 
+  // 触摸即高亮：真机上 bindfocus 往往要等键盘动画结束才触发，先用 touchstart 抢一拍
+  // 点在输入框上就高亮，点在别处就取消，避免高亮残留
+  onPageTouchStart(e) {
+    const dataset = (e.target && e.target.dataset) || {};
+    const field = dataset.field;
+    if (field) {
+      if (this.data.focusField !== field) this.setData({ focusField: field });
+    } else if (this.data.focusField) {
+      this.setData({ focusField: '' });
+    }
+  },
+
+  // 聚焦确认（兼容键盘内切换、代码聚焦等没有 touchstart 的场景）
+  onInputFocus(e) {
+    const field = e.currentTarget.dataset.field;
+    if (this.data.focusField !== field) this.setData({ focusField: field });
+  },
+
   // 失焦时把 "1." / "" 这类中间态收敛成合法数字
   onInputBlur(e) {
     const field = e.currentTarget.dataset.field;
+    if (this.data.focusField === field) this.setData({ focusField: '' });
     if (NUMERIC_FIELDS.indexOf(field) < 0) return;
     const text = this.data.inputText[field];
     if (text === undefined) return;
