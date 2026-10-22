@@ -4,6 +4,7 @@
   <!-- 顶部主视觉 -->
   <view class="page-hero">
     <image class="page-hero-img" src="/images/hero.jpg" mode="aspectFill" />
+    <view class="page-hero-fade"></view>
   </view>
 
   <!-- 预设场景 -->
@@ -32,11 +33,11 @@
   <view class="mode-tabs">
     <view class="mode-tab {{currentMode === 'A' ? 'active' : ''}}" hover-class="mode-tab-hover" bindtap="setMode" data-mode="A">
       <text class="mode-tab-title">推算收益率</text>
-      <text class="mode-tab-sub">知道月存款 → 看需要多少%</text>
+      <text class="mode-tab-sub">知道目标存款 → 看需要多少%</text>
     </view>
     <view class="mode-tab {{currentMode === 'B' ? 'active' : ''}}" hover-class="mode-tab-hover" bindtap="setMode" data-mode="B">
       <text class="mode-tab-title">推算最终存款</text>
-      <text class="mode-tab-sub">知道收益率 → 看 N 年后能存多少</text>
+      <text class="mode-tab-sub">知道收益率 → 看能存多少</text>
     </view>
   </view>
 
@@ -398,7 +399,7 @@
   <view wx:if="{{!hasResult}}" class="empty-state">
     <view class="empty-icon"><view class="fa fa-chart-simple"></view></view>
     <view class="empty-title">还没有可展示的结果</view>
-    <view class="empty-desc">选择一个示例场景，或填写起始年龄、目标存款与年收入，结果会自动出现在这里</view>
+    <view class="empty-desc">选择一个示例场景，或填写起始年龄、目标年龄、目标存款与年收入，结果会自动出现在这里</view>
   </view>
 
   <!-- 结果展示区域 -->
@@ -458,7 +459,7 @@
       </view>
 
       <view class="index-dims">
-        <view class="dim" wx:for="{{freedom.dims}}" wx:key="key">
+        <view wx:for="{{freedom.dims}}" wx:key="key">
           <view class="dim-head">
             <text class="dim-name">{{item.name}}</text>
             <text class="dim-score">{{item.score}} / {{item.max}}</text>

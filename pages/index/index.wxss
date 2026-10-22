@@ -3,6 +3,7 @@
 /* ===== 顶部主视觉 ===== */
 
 .page-hero {
+  position: relative;
   margin: -24rpx -24rpx 0;
   height: 375rpx;
   overflow: hidden;
@@ -15,11 +16,40 @@
   height: 100%;
 }
 
-/* 首张卡片上移，压住主视觉底部约 1/4（375rpx × 1/4 ≈ 94rpx） */
+/* 图片尾部渐变：向页面背景色 #F3F5F8 平滑过渡，消除图片底边的硬切边
+   高度 60rpx，顶端不越过卡片顶边（卡片上移 94rpx）：
+   渐变只露出在卡片两侧 24rpx 边距处，不冲淡卡片上方的图片主体。
+   不加中间垫色（叠在深蓝上会发灰），只用背景色多段缓入 */
+.page-hero-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 60rpx;
+  background: linear-gradient(
+    to bottom,
+    rgba(243, 245, 248, 0) 0%,
+    rgba(243, 245, 248, 0.12) 25%,
+    rgba(243, 245, 248, 0.32) 50%,
+    rgba(243, 245, 248, 0.6) 72%,
+    rgba(243, 245, 248, 0.85) 88%,
+    #F3F5F8 100%
+  );
+  pointer-events: none;
+}
+
+/* 首张卡片上移，压住主视觉底部约 1/4（375rpx × 1/4 ≈ 94rpx）
+   毛玻璃：低透明度白 + 纯模糊（不加 saturate，避免滚到浅色背景时整片泛白）；
+   卡片压在深色图片上时透出模糊图纹，滚到浅色背景上时接近普通白卡，过渡自然。
+   透明度降低后边缘对比弱，用浅色描边补足轮廓 */
 .preset-card {
   position: relative;
   z-index: 1;
   margin-top: -94rpx;
+  background: rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1rpx solid rgba(255, 255, 255, 0.5);
 }
 
 /* ===== 财务自由指数 ===== */

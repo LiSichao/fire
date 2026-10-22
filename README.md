@@ -17,7 +17,7 @@ FIRE helps users turn a long-term financial goal into an editable annual cash-fl
   - **Project a balance:** choose an annual return and estimate the balance at the target age.
 - **Editable annual cash-flow model:** income growth, inflation, household spending, annual expenses, car loans, mortgages, rent, and property fees.
 - **Eight expense groups (A–H), plus planning inputs:** basic assumptions, income, inflation, fixed costs, daily spending, annual items, loans, housing, other costs, custom categories, and optional housing-fund/social-security offsets.
-- **Ten presets:** example scenarios for an early-career worker, a young professional saving for a down payment, a DINK household, family planning, parents with children, a mortgage-heavy household, mid-career transition, a two-child household, a senior executive, and pre-retirement planning.
+- **Nine presets:** example scenarios for an early-career worker, a young professional saving for a down payment, a DINK household, family planning, parents with children, mid-career transition, a two-child household, a senior executive, and pre-retirement planning.
 - **Four charts:** annual income versus expenses, expense composition, projected balance under one or more return assumptions, and annual surplus breakdown.
 - **Return comparisons:** compare the primary assumption with selectable 3%, 5%, 7%, 10%, and 12% annual-return scenarios.
 - **A heuristic 0–100 planning score:** savings rate, target feasibility, income-growth assumptions, expense profile, and target size are summarized, with a model-based age-band percentile estimate.
@@ -131,7 +131,7 @@ This is a statement about the repository code reviewed, not a guarantee about da
 
 There is no automated test runner or CI workflow in the current source tree. Until automated checks are added, manually validate changes in WeChat DevTools:
 
-- Load all ten presets and confirm values render without errors.
+- Load all nine presets and confirm values render without errors.
 - Test both calculation modes with representative positive, zero, and negative annual surpluses.
 - Test target ages, loan start/end years, end-month boundaries, inflation, and custom expense labels.
 - Enable and disable each comparison rate and verify the balance chart updates.

@@ -3,11 +3,9 @@
     "pages/index/index"
   ],
   "window": {
-    "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#0B1030",
     "navigationBarTitleText": "FIRE财务自由",
-    "navigationBarTextStyle": "white",
-    "backgroundColor": "#F3F5F8"
+    "navigationBarTextStyle": "white"
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",

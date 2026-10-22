@@ -98,20 +98,18 @@ const PRESETS = {
     key: 'freshgrad',
     label: '22岁应届生·一线起步',
     icon: 'fa-graduation-cap',
-    description: '月薪8k，租房通勤，想35岁不被迫上班',
     startAge: 22, endAge: 35, initial: 2, target: 100,
-    incomeStart: 9.6, growthRate: 15, growthYears: 5,
-    utilities: 200, charging: 100, parking: 0, broadband: 1000,
-    dailyPerPerson: 5000, dailyPersons: 1,
+    incomeStart: 10, growthRate: 15, growthYears: 5,
+    utilities: 200, charging: 0, parking: 0, broadband: 1000,
+    dailyPerPerson: 3000, dailyPersons: 1,
     filial: 0, travelPerPerson: 1, travelPersons: 1,
-    rent: 3000, propertyFee: 0,
+    rent: 3500, propertyFee: 0,
     petMonthly: 0, education: 0, insurance: 0.3,
   },
   junior: {
     key: 'junior',
     label: '25岁初入职场·攒首付',
     icon: 'fa-briefcase',
-    description: '二线城市单身，目标30岁付50万首付',
     startAge: 25, endAge: 31, initial: 10, target: 50,
     incomeStart: 18, growthRate: 10, growthYears: 4,
     utilities: 250, charging: 150, parking: 200, broadband: 1200,
@@ -124,7 +122,6 @@ const PRESETS = {
     key: 'dink',
     label: '28岁筹备婚礼·DINK',
     icon: 'fa-heart',
-    description: '双职工合计月入3w，准备结婚买房',
     startAge: 28, endAge: 36, initial: 50, target: 260,
     incomeStart: 42, growthRate: 8, growthYears: 5,
     utilities: 400, charging: 300, parking: 400, broadband: 2000,
@@ -137,7 +134,6 @@ const PRESETS = {
     key: 'prebaby',
     label: '30岁备孕·育儿前夜',
     icon: 'fa-baby',
-    description: '准备一胎，评估育儿成本',
     startAge: 30, endAge: 42, initial: 80, target: 420,
     incomeStart: 48, growthRate: 6, growthYears: 5,
     utilities: 400, charging: 300, parking: 400, broadband: 2000,
@@ -151,7 +147,6 @@ const PRESETS = {
     key: 'parent33',
     label: '33岁有娃·育儿压力',
     icon: 'fa-child',
-    description: '一线城市育儿，目标50岁财务自由',
     startAge: 33, endAge: 50, initial: 120, target: 700,
     incomeStart: 60, growthRate: 5, growthYears: 5,
     utilities: 500, charging: 400, parking: 500, broadband: 2400,
@@ -160,24 +155,10 @@ const PRESETS = {
     mortgageMonthly: 10000, mortgageStartYear: CURRENT_YEAR - 3, mortgageEndYear: CURRENT_YEAR + 22, mortgageEndMonth: 12,
     rent: 0, propertyFee: 600, education: 3, insurance: 2,
   },
-  mortgage35: {
-    key: 'mortgage35',
-    label: '35岁房贷重担·月供1.5w',
-    icon: 'fa-house',
-    description: '兼顾娃和退休',
-    startAge: 35, endAge: 55, initial: 150, target: 650,
-    incomeStart: 66, growthRate: 4, growthYears: 5,
-    utilities: 500, charging: 400, parking: 500, broadband: 2400,
-    dailyPerPerson: 6200, dailyPersons: 3,
-    filial: 3, travelPerPerson: 2, travelPersons: 3,
-    mortgageMonthly: 13000, mortgageStartYear: CURRENT_YEAR - 5, mortgageEndYear: CURRENT_YEAR + 20, mortgageEndMonth: 12,
-    rent: 0, propertyFee: 800, education: 4, insurance: 2,
-  },
   transition36: {
     key: 'transition36',
     label: '36岁中年转型·副业筹划',
     icon: 'fa-rocket',
-    description: '想46岁前实现职业自主',
     startAge: 36, endAge: 46, initial: 100, target: 500,
     incomeStart: 17.5, growthRate: 3, growthYears: 10,
     utilities: 100, charging: 0, parking: 0, broadband: 1200,
@@ -189,7 +170,6 @@ const PRESETS = {
     key: 'parent42',
     label: '42岁双娃父母·教育金压力',
     icon: 'fa-children',
-    description: '教育 + 自我养老双重压力',
     startAge: 42, endAge: 57, initial: 300, target: 1000,
     incomeStart: 78, growthRate: 3, growthYears: 5,
     utilities: 600, charging: 500, parking: 600, broadband: 2400,
@@ -202,11 +182,10 @@ const PRESETS = {
     key: 'exec48',
     label: '48岁高管·收入高峰',
     icon: 'fa-gem',
-    description: '想55岁全身而退',
     startAge: 48, endAge: 56, initial: 800, target: 1500,
     incomeStart: 132, growthRate: 5, growthYears: 3,
     utilities: 700, charging: 600, parking: 800, broadband: 3000,
-    dailyPerPerson: 9500, dailyPersons: 2,
+    dailyPerPerson: 9500, dailyPersons: 3,
     filial: 5, travelPerPerson: 5, travelPersons: 3,
     mortgageMonthly: 0, rent: 0, propertyFee: 1000, education: 4, insurance: 4,
   },
@@ -214,7 +193,6 @@ const PRESETS = {
     key: 'preretire52',
     label: '52岁临退休·最后冲刺',
     icon: 'fa-bullseye',
-    description: '还有8年，最大化养老积累',
     startAge: 52, endAge: 60, initial: 400, target: 800,
     incomeStart: 48, growthRate: 0, growthYears: 1,
     utilities: 600, charging: 400, parking: 600, broadband: 2400,
@@ -447,7 +425,7 @@ function buildCashflow(p) {
     const extraSavings = extraSavingsBase * inflFactor;
     const savings = income - totalExpense + extraSavings;
 
-    rows.push({ year, age, income, A, B, C, D, E, F, G, totalExpense, savings, extraSavings, inflFactor });
+    rows.push({ age, income, A, B, C, D, E, F, G, totalExpense, savings });
   }
   return rows;
 }
@@ -498,8 +476,6 @@ function calculateFreedomIndex(params, result) {
   return {
     total: Math.max(0, Math.min(100, Math.round(s1 + s2 + s3 + s4 + s5))),
     breakdown: { s1: s1, s2: s2, s3: s3, s4: s4, s5: s5 },
-    monthlyIncome: monthlyIncome,
-    monthlyExpense: monthlyExpense,
   };
 }
 
@@ -523,7 +499,7 @@ const ADVICE_HINTS = {
   s1: '试着把月支出降低 10-15%，或寻找增收渠道',
   s2: '考虑延长达成年限，或适度降低目标存款',
   s3: '关注职业晋升 / 副业发展 / 技能升级',
-  s4: '检查房贷占比是否超过收入 35%，必要时考虑置换',
+  s4: '检查房贷占比是否超过收入 30%，必要时考虑置换',
   s5: '调整目标到年收入的 10-20 倍',
 };
 
@@ -717,14 +693,6 @@ Page({
     this._flushPersist();
   },
 
-  onReady() {
-    // 获取图表组件实例
-    this.chart1Component = this.selectComponent('#chart1');
-    this.chart2Component = this.selectComponent('#chart2');
-    this.chart3Component = this.selectComponent('#chart3');
-    this.chart4Component = this.selectComponent('#chart4');
-  },
-
   onUnload() {
     this._flushPersist();
     this._clearRateTimer();
@@ -869,7 +837,8 @@ Page({
     const newParams = { ...defaults, compareRates: {} };
     
     Object.keys(preset).forEach(k => {
-      if (k !== 'key' && k !== 'label' && k !== 'description') {
+      // key/label/icon 是展示元数据，不属于计算参数
+      if (k !== 'key' && k !== 'label' && k !== 'icon') {
         newParams[k] = preset[k];
       }
     });
@@ -896,7 +865,7 @@ Page({
     });
 
     wx.showToast({
-      title: '已加载：' + preset.label,
+      title: '已加载示例：\n' + preset.label,
       icon: 'none',
       duration: 1500,
     });
@@ -987,6 +956,8 @@ Page({
   _buildInputText(params) {
     const text = {};
     NUMERIC_FIELDS.forEach(key => {
+      // mainRate 由滑块控制、页面上没有对应输入框，不需要文本态
+      if (key === 'mainRate') return;
       const value = params[key];
       text[key] = (value === undefined || value === null) ? '' : String(value);
     });
@@ -1120,7 +1091,11 @@ Page({
   // 核心计算
   recalculate() {
     const p = this._getNormalizedParams();
-    const mainTitle = this.data.currentMode === 'A' ? '推算收益率 · 看需要多少%' : '推算最终存款 · 看 N 年后能存多少';
+    // 结果卡标题带真实年数；年龄区间非法时退回不带数字的说法
+    const spanYears = Math.max(0, p.endAge - p.startAge);
+    const mainTitle = this.data.currentMode === 'A'
+      ? '推算收益率 · 看需要多少%'
+      : (spanYears > 0 ? `推算最终存款 · 看 ${spanYears} 年后能存多少` : '推算最终存款 · 看能存多少');
     const hasAnyData = p.endAge > p.startAge && (p.initial > 0 || p.target > 0 || p.incomeStart > 0 || p.mainRate > 0);
 
     if (!hasAnyData) {
@@ -1151,7 +1126,8 @@ Page({
     const timelineYears = `${cf.length} 年`;
 
     let lines = [];
-    let resultMeta = null;
+    // 财务自由指数只需要所需收益率，其余中间量已在卡片变量里
+    let indexRate = null;
     let card1Label, card1Value, card1Color, card1Sub;
     let card2Label, card2Value, card2Color, card2Sub;
     let card1BadgeShow = false, card1BadgeClass = '', card1BadgeText = '', card1BadgeIcon = 'fa-circle';
@@ -1209,7 +1185,7 @@ Page({
       }
 
       lines = [{ label: `所需 ${pct}%`, rate: r, balances, isMain: true }];
-      resultMeta = { requiredRate: r, finalMain: balances.slice(-1)[0], gap: gap };
+      indexRate = r;
 
       // 徽章
       if (p.target > 0) {
@@ -1279,7 +1255,7 @@ Page({
         }
       });
 
-      resultMeta = { requiredRate: requiredRate, finalMain: finalMain, gap: p.target - finalMain };
+      indexRate = requiredRate;
 
       // 徽章
       if (p.target > 0) {
@@ -1307,8 +1283,8 @@ Page({
 
     // 计算财务自由指数（未设目标时分数含义不成立，直接不展示）
     let freedom = { show: false };
-    if (p.target > 0 && resultMeta && typeof resultMeta.requiredRate === 'number') {
-      const index = calculateFreedomIndex(p, { requiredRate: resultMeta.requiredRate });
+    if (p.target > 0 && typeof indexRate === 'number') {
+      const index = calculateFreedomIndex(p, { requiredRate: indexRate });
       freedom = this._buildFreedomView(index, p);
     }
 

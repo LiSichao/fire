@@ -232,8 +232,10 @@ view, text, button, input {
 
 /* ===== 模式专属输入区 ===== */
 
+/* 下内边距与 .section-body 的 32rpx 对齐，
+   否则面板内输入框离底边比其他卡片窄一截 */
 .mode-panel {
-  padding: 24rpx 32rpx;
+  padding: 24rpx 32rpx 32rpx;
   margin-bottom: 24rpx;
   background: #EBF1FC;
   border: 1rpx solid #D2DDF3;
