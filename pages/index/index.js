@@ -1,23 +1,24 @@
 // pages/index/index.js
 import * as echarts from '../../components/ec-canvas/echarts';
 
-// 颜色常量
+// 图表配色：语义色（收入/支出/目标）+ 主题色阶（累计曲线、支出分类）
 const COLORS = {
-  income: '#10B981',
-  expense: '#EF4444',
-  expA: '#3B82F6',
-  expB: '#F59E0B',
-  expC: '#8B5CF6',
-  expD: '#EF4444',
-  expE: '#0EA5E9',
-  expF: '#EC4899',
-  expG: '#14B8A6',
-  savings: '#059669',
-  indigo: '#2E449C',
-  target: '#DC2626',
+  income: '#10B981',   // 收入，与卡片绿色一致
+  expense: '#EF4444',  // 支出，与卡片红色一致
+  target: '#F59E0B',   // 目标参考线，避开支出的红
+  primary: '#2E449C',  // 主题主色，累计曲线 / 结余线
+  // 支出分类：由深到浅的主题色阶，堆叠时读作一个整体
+  expA: '#0B143D',
+  expB: '#192E7E',
+  expC: '#2E449C',
+  expD: '#4A63B8',
+  expE: '#6C82CC',
+  expF: '#93A5DE',
+  expG: '#BCC8EC',
 };
 
-const COMPARE_LINE_COLORS = ['#94A3B8', '#A78BFA', '#FB923C', '#06B6D4', '#84CC16'];
+// 对比收益率曲线：同一色系的浅色调，弱于主曲线
+const COMPARE_LINE_COLORS = ['#5C6FA8', '#8FA0C8', '#7C8DB5', '#C2CBE6', '#A3B0D6'];
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -648,7 +649,8 @@ Page({
     // 结果展示
     hasResult: false,
     mainTitle: '推算收益率 · 看需要多少%',
-    timeline: '请填入参数或加载示例',
+    timelineRange: '',
+    timelineYears: '',
     card1Label: '所需年化收益率',
     card1Value: '—',
     card1Color: 'indigo',
@@ -1118,12 +1120,12 @@ Page({
   // 核心计算
   recalculate() {
     const p = this._getNormalizedParams();
+    const mainTitle = this.data.currentMode === 'A' ? '推算收益率 · 看需要多少%' : '推算最终存款 · 看 N 年后能存多少';
     const hasAnyData = p.endAge > p.startAge && (p.initial > 0 || p.target > 0 || p.incomeStart > 0 || p.mainRate > 0);
 
     if (!hasAnyData) {
       this.setData({
         hasResult: false,
-        timeline: '请填入参数或加载示例',
         'freedom.show': false,
       });
       return;
@@ -1132,9 +1134,11 @@ Page({
     if (p.endAge <= p.startAge) {
       this.setData({
         hasResult: true,
+        mainTitle,
         card1Value: '—',
         card2Value: '—',
-        timeline: '请将「目标年龄」设置为大于「起始年龄」',
+        timelineRange: '请将「目标年龄」设置为大于「起始年龄」',
+        timelineYears: '',
         'freedom.show': false,
       });
       return;
@@ -1143,7 +1147,8 @@ Page({
     const cf = buildCashflow(p);
     const savings = cf.map(r => r.savings);
     const principalContrib = p.initial + savings.reduce((a, b) => a + b, 0);
-    const timeline = `${p.startAge} → ${p.endAge} 岁 · ${cf.length} 年`;
+    const timelineRange = `${p.startAge} → ${p.endAge} 岁`;
+    const timelineYears = `${cf.length} 年`;
 
     let lines = [];
     let resultMeta = null;
@@ -1151,10 +1156,8 @@ Page({
     let card2Label, card2Value, card2Color, card2Sub;
     let card1BadgeShow = false, card1BadgeClass = '', card1BadgeText = '', card1BadgeIcon = 'fa-circle';
     let card2BadgeShow = false, card2BadgeClass = '', card2BadgeText = '', card2BadgeIcon = 'fa-circle';
-    let mainTitle;
 
     if (this.data.currentMode === 'A') {
-      mainTitle = '推算收益率 · 看需要多少%';
       const r = solveRate(savings, p.initial, p.target);
       const balances = simulateGrowth(savings, r, p.initial);
       const pct = (r * 100).toFixed(2);
@@ -1238,7 +1241,6 @@ Page({
       }
 
     } else {
-      mainTitle = '推算最终存款 · 看 N 年后能存多少';
       const mainRateDecimal = p.mainRate / 100;
       const balancesMain = simulateGrowth(savings, mainRateDecimal, p.initial);
       const finalMain = balancesMain.slice(-1)[0];
@@ -1313,7 +1315,7 @@ Page({
     this.setData({
       hasResult: true,
       mainTitle,
-      timeline,
+      timelineRange, timelineYears,
       card1Label, card1Value, card1Color, card1Sub,
       card1BadgeShow, card1BadgeClass, card1BadgeText, card1BadgeIcon,
       card2Label, card2Value, card2Color, card2Sub,
@@ -1441,14 +1443,16 @@ Page({
     const option = {
       tooltip: {
         trigger: 'axis',
+        // 小程序端是 canvas 渲染，提示框走 richText 模式，换行只能用 \n
+        renderMode: 'richText',
         backgroundColor: 'rgba(31, 41, 55, 0.95)',
         textStyle: { fontSize: 11, color: '#fff' },
         formatter: function(params) {
-          let result = params[0].axisValue + '<br/>';
+          const lines = [params[0].axisValue];
           params.forEach(item => {
-            result += item.marker + item.seriesName + ': ' + item.value.toFixed(2) + 'w<br/>';
+            lines.push(item.marker + item.seriesName + ': ' + item.value.toFixed(2) + 'w');
           });
-          return result;
+          return lines.join('\n');
         }
       },
       legend: {
@@ -1456,7 +1460,7 @@ Page({
         textStyle: { fontSize: 11, color: '#6B7280' },
         itemStyle: { borderRadius: 2 }
       },
-      grid: { left: 50, right: 20, top: 40, bottom: 30 },
+      grid: { left: 48, right: 12, top: 34, bottom: 22 },
       xAxis: {
         type: 'category',
         data: labels,
@@ -1506,7 +1510,7 @@ Page({
         type: 'scroll',
         padding: [0, 10]
       },
-      grid: { left: 50, right: 20, top: 50, bottom: 30 },
+      grid: { left: 48, right: 12, top: 42, bottom: 22 },
       xAxis: {
         type: 'category',
         data: labels,
@@ -1535,7 +1539,7 @@ Page({
   // 图表3：存款累积曲线
   _renderChart3(lines, labels, p) {
     const datasets = lines.map((line, idx) => {
-      const color = line.isMain ? COLORS.indigo : COMPARE_LINE_COLORS[(idx - 1) % COMPARE_LINE_COLORS.length];
+      const color = line.isMain ? COLORS.primary : COMPARE_LINE_COLORS[(idx - 1) % COMPARE_LINE_COLORS.length];
       return {
         name: line.label,
         type: 'line',
@@ -1577,7 +1581,7 @@ Page({
         type: 'scroll',
         padding: [0, 10]
       },
-      grid: { left: 60, right: 20, top: 50, bottom: 30 },
+      grid: { left: 48, right: 12, top: 42, bottom: 22 },
       xAxis: {
         type: 'category',
         data: labels,
@@ -1607,7 +1611,7 @@ Page({
         top: 0,
         textStyle: { fontSize: 11, color: '#6B7280' }
       },
-      grid: { left: 60, right: 20, top: 40, bottom: 30 },
+      grid: { left: 48, right: 12, top: 34, bottom: 22 },
       xAxis: {
         type: 'category',
         data: labels,
@@ -1624,7 +1628,7 @@ Page({
           name: '收入',
           type: 'bar',
           data: cf.map(r => +r.income.toFixed(2)),
-          itemStyle: { color: COLORS.income + 'CC', borderRadius: [4, 4, 0, 0] },
+          itemStyle: { color: COLORS.income, borderRadius: [4, 4, 0, 0] },
           barWidth: '30%',
           z: 2
         },
@@ -1632,7 +1636,7 @@ Page({
           name: '总支出',
           type: 'bar',
           data: cf.map(r => -(+r.totalExpense.toFixed(2))),
-          itemStyle: { color: '#FCA5A5', borderRadius: [0, 0, 4, 4] },
+          itemStyle: { color: COLORS.expense, borderRadius: [0, 0, 4, 4] },
           barWidth: '30%',
           z: 2
         },
@@ -1640,8 +1644,8 @@ Page({
           name: '年结余',
           type: 'line',
           data: cf.map(r => +r.savings.toFixed(2)),
-          lineStyle: { color: COLORS.savings, width: 3 },
-          itemStyle: { color: COLORS.savings },
+          lineStyle: { color: COLORS.primary, width: 3 },
+          itemStyle: { color: COLORS.primary },
           symbolSize: 6,
           smooth: true,
           z: 3

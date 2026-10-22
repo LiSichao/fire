@@ -59,25 +59,35 @@ view, text, button, input {
   margin-bottom: 24rpx;
 }
 
-.decorator {
-  width: 6rpx;
-  height: 28rpx;
-  background-color: #2E449C;
-  border-radius: 3rpx;
-  margin-right: 12rpx;
+.card-title-icon {
+  font-size: 26rpx;
+  color: #2E449C;
+  margin-right: 10rpx;
 }
 
 .card-title-text {
-  font-size: 32rpx;
+  font-size: 28rpx;
   font-weight: 600;
   color: #111827;
 }
 
-.card-label {
-  font-size: 24rpx;
-  color: #6B7280;
-  margin-bottom: 12rpx;
-  font-weight: 500;
+.card-meta {
+  margin-left: auto;
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+/* 数值与徽章同排，向指数卡的评分行看齐 */
+.stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.stat-row .level-badge {
+  margin-top: 0;
+  flex-shrink: 0;
 }
 
 .card-value {
@@ -139,7 +149,7 @@ view, text, button, input {
 .field-label {
   font-size: 24rpx;
   color: #6B7280;
-  margin-bottom: 10rpx;
+  margin-bottom: 12rpx;
 }
 
 .field-input {
@@ -388,25 +398,22 @@ view, text, button, input {
 .chart-title {
   display: flex;
   align-items: center;
-  gap: 10rpx;
-  font-size: 26rpx;
+  font-size: 28rpx;
   font-weight: 600;
-  color: #374151;
-  margin-bottom: 20rpx;
+  color: #111827;
+  margin-bottom: 24rpx;
 }
 
 .chart-title .fa {
-  font-size: 28rpx;
-  color: #6B7280;
+  font-size: 26rpx;
+  color: #2E449C;
+  margin-right: 10rpx;
 }
 
+/* 卡片内容宽 638rpx（750 − 48 容器 − 64 卡片内边距），按 4:3 取高 */
 .chart-canvas {
   width: 100%;
-  height: 560rpx;
-}
-
-.chart-canvas.tall {
-  height: 720rpx;
+  height: 478rpx;
 }
 
 /* ===== 结果区 ===== */
@@ -456,7 +463,7 @@ view, text, button, input {
 /* ===== 空状态 ===== */
 
 .empty-state {
-  padding: 56rpx 40rpx;
+  padding: 48rpx 32rpx;
   text-align: center;
   background: #FFFFFF;
   border: 1rpx solid #E9EDF4;
@@ -470,7 +477,7 @@ view, text, button, input {
 }
 
 .empty-title {
-  font-size: 26rpx;
+  font-size: 28rpx;
   font-weight: 600;
   color: #6B7280;
   margin-bottom: 8rpx;

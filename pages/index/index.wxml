@@ -9,7 +9,7 @@
   <!-- 预设场景 -->
   <view class="card-shadow preset-card">
     <view class="card-header">
-      <view class="decorator"></view>
+      <view class="fa fa-bolt card-title-icon"></view>
       <text class="card-title-text">快速加载示例</text>
     </view>
     <scroll-view scroll-x class="presets">
@@ -405,34 +405,45 @@
   <block wx:if="{{hasResult}}">
     <view class="card result-head">
       <view class="card-header">
-        <view class="decorator"></view>
+        <view class="fa fa-calculator card-title-icon"></view>
         <text class="card-title-text">{{mainTitle}}</text>
+        <text class="card-meta">{{timelineYears}}</text>
       </view>
-      <view class="card-sub">{{timeline}}</view>
+      <view class="card-sub">{{timelineRange}}</view>
     </view>
 
     <!-- 结果卡片 -->
     <view class="cards">
       <view class="card">
-        <view class="card-label">{{card1Label}}</view>
-        <view class="card-value {{card1Color}}">{{card1Value}}</view>
-        <view wx:if="{{card1BadgeShow}}" class="level-badge {{card1BadgeClass}}"><view class="fa {{card1BadgeIcon}}"></view><text>{{card1BadgeText}}</text></view>
+        <view class="card-header">
+          <view class="fa fa-percent card-title-icon"></view>
+          <text class="card-title-text">{{card1Label}}</text>
+        </view>
+        <view class="stat-row">
+          <view class="card-value {{card1Color}}">{{card1Value}}</view>
+          <view wx:if="{{card1BadgeShow}}" class="level-badge {{card1BadgeClass}}"><view class="fa {{card1BadgeIcon}}"></view><text>{{card1BadgeText}}</text></view>
+        </view>
         <view class="card-sub">{{card1Sub}}</view>
       </view>
       <view class="card">
-        <view class="card-label">{{card2Label}}</view>
-        <view class="card-value {{card2Color}}">{{card2Value}}</view>
-        <view wx:if="{{card2BadgeShow}}" class="level-badge {{card2BadgeClass}}"><view class="fa {{card2BadgeIcon}}"></view><text>{{card2BadgeText}}</text></view>
+        <view class="card-header">
+          <view class="fa fa-coins card-title-icon"></view>
+          <text class="card-title-text">{{card2Label}}</text>
+        </view>
+        <view class="stat-row">
+          <view class="card-value {{card2Color}}">{{card2Value}}</view>
+          <view wx:if="{{card2BadgeShow}}" class="level-badge {{card2BadgeClass}}"><view class="fa {{card2BadgeIcon}}"></view><text>{{card2BadgeText}}</text></view>
+        </view>
         <view class="card-sub">{{card2Sub}}</view>
       </view>
     </view>
 
     <!-- 财务自由指数 -->
     <view wx:if="{{freedom.show}}" class="index-card">
-      <view class="index-head">
-        <view class="decorator"></view>
+      <view class="card-header">
+        <view class="fa fa-gauge-high card-title-icon"></view>
         <text class="card-title-text">财务自由指数</text>
-        <text class="index-band">{{freedom.ageBand}}</text>
+        <text class="card-meta">{{freedom.ageBand}}</text>
       </view>
 
       <view class="index-top">
@@ -494,7 +505,7 @@
 
       <view class="chart-container">
         <view class="chart-title"><view class="fa fa-piggy-bank"></view><text>存款累积曲线（核心图）</text></view>
-        <view class="chart-canvas tall">
+        <view class="chart-canvas">
           <ec-canvas id="chart3" canvas-id="chart3" ec="{{ecChart3}}"></ec-canvas>
         </view>
       </view>

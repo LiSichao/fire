@@ -1,1 +1,2 @@
-/.DS_Store
+# macOS 目录元数据，任何层级都不纳入版本控制
+.DS_Store
