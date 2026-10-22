@@ -230,7 +230,9 @@ function sanitizeDecimalInput(raw, field) {
   }
   const match = /^(\d*)(?:\.(\d*))?$/.exec(s);
   if (!match) return '';
-  const intPart = match[1].slice(0, limit.int);
+  // 去掉整数部分的前导 0（保留单独的 "0" 和 "0.x"），再做位数截断
+  const trimmed = match[1].replace(/^0+(?=\d)/, '');
+  const intPart = trimmed.slice(0, limit.int);
   if (limit.dec === 0 || match[2] === undefined) return intPart;
   return intPart + '.' + match[2].slice(0, limit.dec);
 }
