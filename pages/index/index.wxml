@@ -31,11 +31,12 @@
 
   <!-- 计算模式切换 -->
   <view class="mode-tabs">
-    <view class="mode-tab {{currentMode === 'A' ? 'active' : ''}}" hover-class="mode-tab-hover" bindtap="setMode" data-mode="A">
+    <view class="mode-tab-indicator {{currentMode === 'B' ? 'is-b' : ''}}"></view>
+    <view class="mode-tab {{currentMode === 'A' ? 'active' : ''}}" hover-class="mode-tab-hover" bindtouchstart="onModeTouchStart" bindtouchmove="onModeTouchMove" bindtouchend="onModeTouchEnd" bindtap="setMode" data-mode="A">
       <text class="mode-tab-title">推算收益率</text>
       <text class="mode-tab-sub">知道目标存款 → 看需要多少%</text>
     </view>
-    <view class="mode-tab {{currentMode === 'B' ? 'active' : ''}}" hover-class="mode-tab-hover" bindtap="setMode" data-mode="B">
+    <view class="mode-tab {{currentMode === 'B' ? 'active' : ''}}" hover-class="mode-tab-hover" bindtouchstart="onModeTouchStart" bindtouchmove="onModeTouchMove" bindtouchend="onModeTouchEnd" bindtap="setMode" data-mode="B">
       <text class="mode-tab-title">推算最终存款</text>
       <text class="mode-tab-sub">知道收益率 → 看能存多少</text>
     </view>

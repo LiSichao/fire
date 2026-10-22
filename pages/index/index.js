@@ -810,9 +810,34 @@ Page({
     this._debounceRecalc();
   },
 
-  // 切换计算模式
+  // 切换计算模式：主路径是 touchend（tap 在滚动后会被延迟约 200ms），bindtap 仅作兜底
   setMode(e) {
-    const mode = e.currentTarget.dataset.mode;
+    if (Date.now() - (this._modeTouchAt || 0) < 500) return;
+    this._applyMode(e.currentTarget.dataset.mode);
+  },
+
+  onModeTouchStart(e) {
+    const t = e.touches[0];
+    this._modeTouch = { x: t.clientX, y: t.clientY, moved: false };
+  },
+
+  onModeTouchMove(e) {
+    const s = this._modeTouch;
+    if (!s || s.moved) return;
+    const t = e.touches[0];
+    if (Math.abs(t.clientX - s.x) > 8 || Math.abs(t.clientY - s.y) > 8) s.moved = true;
+  },
+
+  onModeTouchEnd(e) {
+    const s = this._modeTouch;
+    this._modeTouch = null;
+    if (!s || s.moved) return;
+    this._modeTouchAt = Date.now();
+    this._applyMode(e.currentTarget.dataset.mode);
+  },
+
+  _applyMode(mode) {
+    if (mode === this.data.currentMode) return;
     this.setData({ currentMode: mode });
     this._debounceRecalc();
   },
