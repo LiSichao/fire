@@ -259,7 +259,7 @@ view, text, button, input {
   padding: 16rpx 24rpx;
   margin-right: 12rpx;
   background: #FFFFFF;
-  border: 1rpx solid #E5E7EB;
+  border: 2rpx solid #E5E7EB;
   border-radius: 12rpx;
   font-size: 24rpx;
   color: #374151;
@@ -280,7 +280,7 @@ view, text, button, input {
 
 .preset-btn.active {
   border-color: #2E449C;
-  background: #E9EDFA;
+  background: #DCE6FA;
   color: #192E7E;
 }
 
@@ -297,7 +297,7 @@ view, text, button, input {
 .compare-rate-item {
   padding: 16rpx 24rpx;
   background: #FFFFFF;
-  border: 1rpx solid #E5E7EB;
+  border: 2rpx solid #E5E7EB;
   border-radius: 12rpx;
   font-size: 24rpx;
   color: #374151;
@@ -305,7 +305,7 @@ view, text, button, input {
 }
 
 .compare-rate-item.checked {
-  background: #E9EDFA;
+  background: #DCE6FA;
   border-color: #2E449C;
   color: #192E7E;
   font-weight: 500;
