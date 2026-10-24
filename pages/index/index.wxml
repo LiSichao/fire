@@ -11,7 +11,7 @@
   <view class="card-shadow preset-card">
     <view class="card-header">
       <view class="fa fa-bolt card-title-icon"></view>
-      <text class="card-title-text">快速加载示例</text>
+      <text class="card-title-text">快速示例</text>
     </view>
     <scroll-view scroll-x class="presets">
       <view 
@@ -34,11 +34,11 @@
     <view class="mode-tab-indicator {{currentMode === 'B' ? 'is-b' : ''}}"></view>
     <view class="mode-tab {{currentMode === 'A' ? 'active' : ''}}" hover-class="mode-tab-hover" bindtouchstart="onModeTouchStart" bindtouchmove="onModeTouchMove" bindtouchend="onModeTouchEnd" bindtap="setMode" data-mode="A">
       <text class="mode-tab-title">推算收益率</text>
-      <text class="mode-tab-sub">知道目标存款 → 看需要多少%</text>
+      <text class="mode-tab-sub">填目标存款 → 算所需收益率</text>
     </view>
     <view class="mode-tab {{currentMode === 'B' ? 'active' : ''}}" hover-class="mode-tab-hover" bindtouchstart="onModeTouchStart" bindtouchmove="onModeTouchMove" bindtouchend="onModeTouchEnd" bindtap="setMode" data-mode="B">
       <text class="mode-tab-title">推算最终存款</text>
-      <text class="mode-tab-sub">知道收益率 → 看能存多少</text>
+      <text class="mode-tab-sub">填预期收益率 → 算最终存款</text>
     </view>
   </view>
 
@@ -46,7 +46,7 @@
   <block wx:if="{{currentMode === 'A'}}">
     <view class="mode-panel">
       <view class="field">
-        <view class="field-label">目标存款 (万元)</view>
+        <view class="field-label">目标存款（万元）</view>
         <input 
           class="field-input {{focusField === 'target' ? 'is-focus' : ''}}" 
           type="digit" 
@@ -63,7 +63,7 @@
   <block wx:if="{{currentMode === 'B'}}">
     <view class="mode-panel">
       <view class="slider-block">
-        <view class="field-label">你预期每年能赚多少？（年化收益率）</view>
+        <view class="field-label">预期年化收益率</view>
         <view class="slider-value">{{rateDisplay}}%</view>
         <slider 
           min="0" 
@@ -73,10 +73,10 @@
           bindchanging="onMainRateChanging"
           bindchange="onMainRateChange"
           activeColor="#2E449C"
-          backgroundColor="#E5E7EB"
+          backgroundColor="#CFD9EE"
         />
       </view>
-      <view class="field-label">想同时看看别的收益率？（可多选对比）</view>
+      <view class="field-label">对比收益率（可多选）</view>
       <view class="compare-rates">
         <view 
           wx:for="{{compareRateOptions}}" 
@@ -121,7 +121,7 @@
         />
       </view>
       <view class="field">
-        <view class="field-label">初始本金 (万元)</view>
+        <view class="field-label">初始本金（万元）</view>
         <input 
           class="field-input {{focusField === 'initial' ? 'is-focus' : ''}}" 
           type="digit" 
@@ -141,7 +141,7 @@
     </view>
     <view class="section-body">
       <view class="field">
-        <view class="field-label">起始年收入 (万元/年)</view>
+        <view class="field-label">起始年收入（万元/年）</view>
         <input 
           class="field-input {{focusField === 'incomeStart' ? 'is-focus' : ''}}" 
           type="digit" 
@@ -151,7 +151,7 @@
         />
       </view>
       <view class="field">
-        <view class="field-label">年增长率 (%)</view>
+        <view class="field-label">年增长率（%）</view>
         <input 
           class="field-input {{focusField === 'growthRate' ? 'is-focus' : ''}}" 
           type="digit" 
@@ -181,7 +181,7 @@
     </view>
     <view class="section-body">
       <view class="field">
-        <view class="field-label">年通胀率 (%)</view>
+        <view class="field-label">年通胀率（%）</view>
         <input 
           class="field-input {{focusField === 'inflationRate' ? 'is-focus' : ''}}" 
           type="digit" 
@@ -193,41 +193,41 @@
     </view>
   </view>
 
-  <!-- A段：刚性固定支出 -->
+  <!-- A段：固定支出 -->
   <view class="section {{sections.expA ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="expA">
-      <view class="section-title"><view class="fa fa-bolt"></view><text>A. 刚性固定支出</text></view>
+      <view class="section-title"><view class="fa fa-bolt"></view><text>固定支出</text><text class="section-tag">选填</text></view>
       <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
       <view class="field">
-        <view class="field-label">水电费 (元/月)</view>
+        <view class="field-label">水电费（元/月）</view>
         <input class="field-input {{focusField === 'utilities' ? 'is-focus' : ''}}" type="digit" value="{{inputText.utilities}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="utilities" />
       </view>
       <view class="field">
-        <view class="field-label">充电/燃油 (元/月)</view>
+        <view class="field-label">充电/燃油（元/月）</view>
         <input class="field-input {{focusField === 'charging' ? 'is-focus' : ''}}" type="digit" value="{{inputText.charging}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="charging" />
       </view>
       <view class="field">
-        <view class="field-label">停车费 (元/月)</view>
+        <view class="field-label">停车费（元/月）</view>
         <input class="field-input {{focusField === 'parking' ? 'is-focus' : ''}}" type="digit" value="{{inputText.parking}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="parking" />
       </view>
       <view class="field">
-        <view class="field-label">宽带 + 通讯 (元/年)</view>
+        <view class="field-label">宽带+通讯（元/年）</view>
         <input class="field-input {{focusField === 'broadband' ? 'is-focus' : ''}}" type="digit" value="{{inputText.broadband}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="broadband" />
       </view>
     </view>
   </view>
 
-  <!-- B段：日常开销 -->
+  <!-- B段：日常支出 -->
   <view class="section {{sections.expB ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="expB">
-      <view class="section-title"><view class="fa fa-basket-shopping"></view><text>B. 日常开销</text></view>
+      <view class="section-title"><view class="fa fa-basket-shopping"></view><text>日常支出</text><text class="section-tag">选填</text></view>
       <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
       <view class="field">
-        <view class="field-label">每人每月 (元)</view>
+        <view class="field-label">每人每月（元）</view>
         <input class="field-input {{focusField === 'dailyPerPerson' ? 'is-focus' : ''}}" type="digit" value="{{inputText.dailyPerPerson}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="dailyPerPerson" />
       </view>
       <view class="field">
@@ -240,16 +240,16 @@
   <!-- C段：年度大项 -->
   <view class="section {{sections.expC ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="expC">
-      <view class="section-title"><view class="fa fa-plane"></view><text>C. 年度大项</text></view>
+      <view class="section-title"><view class="fa fa-plane"></view><text>年度大额支出</text><text class="section-tag">选填</text></view>
       <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
       <view class="field">
-        <view class="field-label">孝亲费 (万元/年)</view>
+        <view class="field-label">孝亲费（万元/年）</view>
         <input class="field-input {{focusField === 'filial' ? 'is-focus' : ''}}" type="digit" value="{{inputText.filial}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="filial" />
       </view>
       <view class="field">
-        <view class="field-label">旅游 (万元/人/年)</view>
+        <view class="field-label">旅游（万元/人/年）</view>
         <input class="field-input {{focusField === 'travelPerPerson' ? 'is-focus' : ''}}" type="digit" value="{{inputText.travelPerPerson}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="travelPerPerson" />
       </view>
       <view class="field">
@@ -262,20 +262,20 @@
   <!-- D段：车贷 -->
   <view class="section {{sections.expD ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="expD">
-      <view class="section-title"><view class="fa fa-car"></view><text>D. 车贷</text></view>
+      <view class="section-title"><view class="fa fa-car"></view><text>车贷</text><text class="section-tag">选填</text></view>
       <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
       <view class="field">
-        <view class="field-label">月供 (元)</view>
+        <view class="field-label">月供（元/月）</view>
         <input class="field-input {{focusField === 'carMonthly' ? 'is-focus' : ''}}" type="digit" value="{{inputText.carMonthly}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="carMonthly" />
       </view>
       <view class="field">
-        <view class="field-label">起始年份</view>
+        <view class="field-label">起始年份（按整年计）</view>
         <input class="field-input {{focusField === 'carStartYear' ? 'is-focus' : ''}}" type="number" value="{{inputText.carStartYear}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="carStartYear" />
       </view>
       <view class="field">
-        <view class="field-label">结束年</view>
+        <view class="field-label">结束年份</view>
         <input class="field-input {{focusField === 'carEndYear' ? 'is-focus' : ''}}" type="number" value="{{inputText.carEndYear}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="carEndYear" />
       </view>
       <view class="field">
@@ -288,20 +288,20 @@
   <!-- E段：住房支出 -->
   <view class="section {{sections.expE ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="expE">
-      <view class="section-title"><view class="fa fa-house"></view><text>E. 住房支出</text></view>
+      <view class="section-title"><view class="fa fa-house"></view><text>住房支出</text><text class="section-tag">选填</text></view>
       <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
       <view class="field">
-        <view class="field-label">房贷月供 (元/月)</view>
+        <view class="field-label">房贷月供（元/月）</view>
         <input class="field-input {{focusField === 'mortgageMonthly' ? 'is-focus' : ''}}" type="digit" value="{{inputText.mortgageMonthly}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="mortgageMonthly" />
       </view>
       <view class="field">
-        <view class="field-label">房贷起始年份</view>
+        <view class="field-label">房贷起始年份（按整年计）</view>
         <input class="field-input {{focusField === 'mortgageStartYear' ? 'is-focus' : ''}}" type="number" value="{{inputText.mortgageStartYear}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="mortgageStartYear" />
       </view>
       <view class="field">
-        <view class="field-label">房贷结束年</view>
+        <view class="field-label">房贷结束年份</view>
         <input class="field-input {{focusField === 'mortgageEndYear' ? 'is-focus' : ''}}" type="number" value="{{inputText.mortgageEndYear}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="mortgageEndYear" />
       </view>
       <view class="field">
@@ -309,11 +309,11 @@
         <input class="field-input {{focusField === 'mortgageEndMonth' ? 'is-focus' : ''}}" type="number" value="{{inputText.mortgageEndMonth}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="mortgageEndMonth" />
       </view>
       <view class="field">
-        <view class="field-label">房租 (元/月)</view>
+        <view class="field-label">房租（元/月）</view>
         <input class="field-input {{focusField === 'rent' ? 'is-focus' : ''}}" type="digit" value="{{inputText.rent}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="rent" />
       </view>
       <view class="field">
-        <view class="field-label">物业费 (元/月)</view>
+        <view class="field-label">物业费（元/月）</view>
         <input class="field-input {{focusField === 'propertyFee' ? 'is-focus' : ''}}" type="digit" value="{{inputText.propertyFee}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="propertyFee" />
       </view>
     </view>
@@ -322,20 +322,20 @@
   <!-- F段：其他常见支出 -->
   <view class="section {{sections.expF ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="expF">
-      <view class="section-title"><view class="fa fa-paw"></view><text>F. 其他常见支出</text></view>
+      <view class="section-title"><view class="fa fa-paw"></view><text>其他常见支出</text><text class="section-tag">选填</text></view>
       <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
       <view class="field">
-        <view class="field-label">宠物 (元/月)</view>
+        <view class="field-label">宠物（元/月）</view>
         <input class="field-input {{focusField === 'petMonthly' ? 'is-focus' : ''}}" type="digit" value="{{inputText.petMonthly}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="petMonthly" />
       </view>
       <view class="field">
-        <view class="field-label">子女教育 (万元/年)</view>
+        <view class="field-label">子女教育（万元/年）</view>
         <input class="field-input {{focusField === 'education' ? 'is-focus' : ''}}" type="digit" value="{{inputText.education}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="education" />
       </view>
       <view class="field">
-        <view class="field-label">商业保险/医疗 (万元/年)</view>
+        <view class="field-label">商业保险/医疗（万元/年）</view>
         <input class="field-input {{focusField === 'insurance' ? 'is-focus' : ''}}" type="digit" value="{{inputText.insurance}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="insurance" />
       </view>
     </view>
@@ -344,7 +344,7 @@
   <!-- G段：自定义科目 -->
   <view class="section {{sections.expG ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="expG">
-      <view class="section-title"><view class="fa fa-circle-plus"></view><text>G. 自定义科目</text></view>
+      <view class="section-title"><view class="fa fa-circle-plus"></view><text>自定义科目</text><text class="section-tag">选填</text></view>
       <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
@@ -368,12 +368,12 @@
   <!-- H段：社保/公积金 -->
   <view class="section {{sections.expH ? '' : 'collapsed'}}">
     <view class="section-header" bindtap="toggleSection" data-section="expH">
-      <view class="section-title"><view class="fa fa-building-columns"></view><text>H. 社保 / 公积金</text></view>
+      <view class="section-title"><view class="fa fa-building-columns"></view><text>社保/公积金</text><text class="section-tag">选填</text></view>
       <view class="fa fa-chevron-down arrow"></view>
     </view>
     <view class="section-body">
       <view class="field">
-        <view class="field-label">公积金月缴（个人+公司合计，元/月）</view>
+        <view class="field-label">公积金月缴（个人+单位合计，元/月）</view>
         <input class="field-input {{focusField === 'housingFundMonthly' ? 'is-focus' : ''}}" type="digit" value="{{inputText.housingFundMonthly}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="housingFundMonthly" />
       </view>
       <view class="field">
@@ -381,13 +381,14 @@
         <input class="field-input {{focusField === 'socialSecurityMonthly' ? 'is-focus' : ''}}" type="digit" value="{{inputText.socialSecurityMonthly}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="socialSecurityMonthly" />
       </view>
       <view class="field">
-        <view class="field-label">公积金可用比例 (%)</view>
+        <view class="field-label">公积金可动用比例（%）</view>
         <input class="field-input {{focusField === 'housingFundUsableRate' ? 'is-focus' : ''}}" type="digit" value="{{inputText.housingFundUsableRate}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="housingFundUsableRate" />
       </view>
       <view class="field">
-        <view class="field-label">社保转养老金可计入比例 (%)</view>
+        <view class="field-label">社保可动用比例（%）</view>
         <input class="field-input {{focusField === 'socialToRetirementRate' ? 'is-focus' : ''}}" type="digit" value="{{inputText.socialToRetirementRate}}" bindinput="onInput" bindfocus="onInputFocus" bindblur="onInputBlur" data-field="socialToRetirementRate" />
       </view>
+      <view class="section-note">只有能实际动用的部分才计入存款</view>
     </view>
   </view>
 
@@ -399,39 +400,30 @@
   <!-- 空状态 -->
   <view wx:if="{{!hasResult}}" class="empty-state">
     <view class="empty-icon"><view class="fa fa-chart-simple"></view></view>
-    <view class="empty-title">还没有可展示的结果</view>
-    <view class="empty-desc">选择一个示例场景，或填写起始年龄、目标年龄、目标存款与年收入，结果会自动出现在这里</view>
+    <view class="empty-title">还没有结果</view>
+    <view class="empty-desc">选择上方示例，或填写参数，结果会自动出现</view>
   </view>
 
   <!-- 结果展示区域 -->
   <block wx:if="{{hasResult}}">
-    <view class="card result-head">
+    <view class="card result-card">
       <view class="card-header">
         <view class="fa fa-calculator card-title-icon"></view>
         <text class="card-title-text">{{mainTitle}}</text>
-        <text class="card-meta">{{timelineYears}}</text>
+        <text class="card-meta">{{timelineMeta}}</text>
       </view>
-      <view class="card-sub">{{timelineRange}}</view>
-    </view>
 
-    <!-- 结果卡片 -->
-    <view class="cards">
-      <view class="card">
-        <view class="card-header">
-          <view class="fa fa-percent card-title-icon"></view>
-          <text class="card-title-text">{{card1Label}}</text>
-        </view>
+      <view class="stat-block">
+        <view class="stat-label">{{card1Label}}</view>
         <view class="stat-row">
           <view class="card-value {{card1Color}}">{{card1Value}}</view>
           <view wx:if="{{card1BadgeShow}}" class="level-badge {{card1BadgeClass}}"><view class="fa {{card1BadgeIcon}}"></view><text>{{card1BadgeText}}</text></view>
         </view>
         <view class="card-sub">{{card1Sub}}</view>
       </view>
-      <view class="card">
-        <view class="card-header">
-          <view class="fa fa-coins card-title-icon"></view>
-          <text class="card-title-text">{{card2Label}}</text>
-        </view>
+
+      <view class="stat-block">
+        <view class="stat-label">{{card2Label}}</view>
         <view class="stat-row">
           <view class="card-value {{card2Color}}">{{card2Value}}</view>
           <view wx:if="{{card2BadgeShow}}" class="level-badge {{card2BadgeClass}}"><view class="fa {{card2BadgeIcon}}"></view><text>{{card2BadgeText}}</text></view>
@@ -455,7 +447,7 @@
         </view>
         <view class="index-meta">
           <view class="level-badge {{freedom.badgeClass}}"><view class="fa {{freedom.badgeIcon}}"></view><text>{{freedom.levelText}}</text></view>
-          <text class="index-peer">同龄人百分位 {{freedom.percentile}}</text>
+          <text class="index-peer">超过 {{freedom.percentile}}% 的同龄人</text>
         </view>
       </view>
 
@@ -486,34 +478,34 @@
         </view>
       </view>
 
-      <view class="index-note">评分与百分位为内置规则的启发式估算，不代表真实同龄人统计，也不构成投资建议。</view>
+      <view class="index-note">评分与百分位按内置规则估算，不代表真实同龄人统计，也不构成投资建议。</view>
     </view>
 
     <!-- 图表区域 -->
     <view class="charts">
       <view class="chart-container">
-        <view class="chart-title"><view class="fa fa-chart-line"></view><text>收入 vs 支出（年度对比）</text></view>
+        <view class="chart-title"><view class="fa fa-chart-line"></view><text>收入与支出</text></view>
         <view class="chart-canvas">
           <ec-canvas id="chart1" canvas-id="chart1" ec="{{ecChart1}}"></ec-canvas>
         </view>
       </view>
 
       <view class="chart-container">
-        <view class="chart-title"><view class="fa fa-chart-pie"></view><text>支出结构（按类堆叠）</text></view>
+        <view class="chart-title"><view class="fa fa-chart-pie"></view><text>支出构成</text></view>
         <view class="chart-canvas">
           <ec-canvas id="chart2" canvas-id="chart2" ec="{{ecChart2}}"></ec-canvas>
         </view>
       </view>
 
       <view class="chart-container">
-        <view class="chart-title"><view class="fa fa-piggy-bank"></view><text>存款累积曲线（核心图）</text></view>
+        <view class="chart-title"><view class="fa fa-piggy-bank"></view><text>存款累积曲线</text></view>
         <view class="chart-canvas">
           <ec-canvas id="chart3" canvas-id="chart3" ec="{{ecChart3}}"></ec-canvas>
         </view>
       </view>
 
       <view class="chart-container">
-        <view class="chart-title"><view class="fa fa-chart-column"></view><text>年度结余分解</text></view>
+        <view class="chart-title"><view class="fa fa-chart-column"></view><text>年度结余</text></view>
         <view class="chart-canvas">
           <ec-canvas id="chart4" canvas-id="chart4" ec="{{ecChart4}}"></ec-canvas>
         </view>
@@ -524,9 +516,9 @@
   <!-- 页脚 -->
   <view class="site-footer">
     <view class="footer-title"><view class="fa fa-lock"></view><text>隐私承诺</text></view>
-    <view class="footer-text">纯前端工具，无服务器后台。所有数据仅保存在你的手机本地。</view>
+    <view class="footer-text">纯前端工具，无服务器后台。所有数据仅保存在本机。</view>
     <view class="footer-copyright">
-      © 2026 FIRE 财务自由 · 仅供参考 不构成投资建议
+      © 2026 FIRE 财务自由 · 仅供参考，不构成投资建议
     </view>
   </view>
 </view>

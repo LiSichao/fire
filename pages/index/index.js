@@ -40,12 +40,12 @@ const FIELD_LIMITS = {
   growthRate: { int: 2, dec: 2 },
   growthYears: { int: 2, dec: 0 },
   inflationRate: { int: 2, dec: 2 },
-  // A 固定开销（元）
+  // A 固定支出（元）
   utilities: { int: 4, dec: 2 },
   charging: { int: 4, dec: 2 },
   parking: { int: 4, dec: 2 },
   broadband: { int: 5, dec: 2 },
-  // B 日常开销
+  // B 日常支出
   dailyPerPerson: { int: 5, dec: 2 },
   dailyPersons: { int: 2, dec: 0 },
   // C 年度大项（万元）
@@ -233,11 +233,11 @@ function formatMoney(w) {
   const abs = Math.abs(w);
   let str;
   if (abs >= 10000) {
-    str = (abs / 10000).toFixed(2) + ' 亿';
+    str = parseFloat((abs / 10000).toFixed(2)) + '亿';
   } else if (abs >= 100) {
-    str = abs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + 'w';
+    str = abs.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '万';
   } else {
-    str = abs.toFixed(1) + 'w';
+    str = abs.toFixed(1) + '万';
   }
   return isNeg ? '亏损 ' + str : str;
 }
@@ -624,9 +624,8 @@ Page({
 
     // 结果展示
     hasResult: false,
-    mainTitle: '推算收益率 · 看需要多少%',
-    timelineRange: '',
-    timelineYears: '',
+    mainTitle: '推算收益率',
+    timelineMeta: '',
     card1Label: '所需年化收益率',
     card1Value: '—',
     card1Color: 'indigo',
@@ -890,7 +889,7 @@ Page({
     });
 
     wx.showToast({
-      title: '已加载示例：\n' + preset.label,
+      title: '已填入示例',
       icon: 'none',
       duration: 1500,
     });
@@ -1116,11 +1115,8 @@ Page({
   // 核心计算
   recalculate() {
     const p = this._getNormalizedParams();
-    // 结果卡标题带真实年数；年龄区间非法时退回不带数字的说法
-    const spanYears = Math.max(0, p.endAge - p.startAge);
-    const mainTitle = this.data.currentMode === 'A'
-      ? '推算收益率 · 看需要多少%'
-      : (spanYears > 0 ? `推算最终存款 · 看 ${spanYears} 年后能存多少` : '推算最终存款 · 看能存多少');
+    // 标题只说明「算什么」，具体年龄区间和年数放到右上角 meta
+    const mainTitle = this.data.currentMode === 'A' ? '推算收益率' : '推算最终存款';
     const hasAnyData = p.endAge > p.startAge && (p.initial > 0 || p.target > 0 || p.incomeStart > 0 || p.mainRate > 0);
 
     if (!hasAnyData) {
@@ -1137,8 +1133,7 @@ Page({
         mainTitle,
         card1Value: '—',
         card2Value: '—',
-        timelineRange: '请将「目标年龄」设置为大于「起始年龄」',
-        timelineYears: '',
+        timelineMeta: '请将「目标年龄」设置为大于「起始年龄」',
         'freedom.show': false,
       });
       return;
@@ -1147,8 +1142,7 @@ Page({
     const cf = buildCashflow(p);
     const savings = cf.map(r => r.savings);
     const principalContrib = p.initial + savings.reduce((a, b) => a + b, 0);
-    const timelineRange = `${p.startAge} → ${p.endAge} 岁`;
-    const timelineYears = `${cf.length} 年`;
+    const timelineMeta = `${p.startAge} → ${p.endAge}岁 · ${cf.length}年`;
 
     let lines = [];
     // 财务自由指数只需要所需收益率，其余中间量已在卡片变量里
@@ -1189,11 +1183,11 @@ Page({
       if (p.inflationRate > 0 && r > 0 && p.target > 0) {
         const realRate = r - p.inflationRate;
         const realPct = (realRate * 100).toFixed(2);
-        card1Sub += ` · 剔除 ${(p.inflationRate * 100).toFixed(1)}% 通胀后实际 ${realPct}%`;
+        card1Sub += ` · 剔除 ${(p.inflationRate * 100).toFixed(1)}% 通胀后，实际 ${realPct}%`;
       }
 
       const gap = p.target - principalContrib;
-      card2Label = '投资需要赚多少？';
+      card2Label = '投资补足金额';
       
       if (p.target <= 0) {
         card2Value = '—';
@@ -1223,7 +1217,7 @@ Page({
         if (p.inflationRate > 0 && r > 0) {
           const realRate = r - p.inflationRate;
           const realPct = (realRate * 100).toFixed(2);
-          card1Sub += ` · 剔除通胀实际 ${realPct}%`;
+          card1Sub += ` · 剔除 ${(p.inflationRate * 100).toFixed(1)}% 通胀后，实际 ${realPct}%`;
         }
 
         const years = Math.max(1, p.endAge - p.startAge);
@@ -1232,7 +1226,7 @@ Page({
         if (gap <= 0) {
           card2BadgeClass = 'level-green';
           card2BadgeIcon = 'fa-circle-check';
-          card2BadgeText = '超额';
+          card2BadgeText = '无需投资';
         } else {
           card2BadgeClass = 'level-gray';
           card2BadgeIcon = 'fa-arrow-trend-down';
@@ -1247,7 +1241,7 @@ Page({
       const finalMain = balancesMain.slice(-1)[0];
       const requiredRate = solveRate(savings, p.initial, p.target);
 
-      card1Label = `${p.endAge} 岁存款`;
+      card1Label = `${p.endAge}岁存款`;
       card1Value = formatMoney(finalMain);
       card1Color = p.target > 0 ? (finalMain >= p.target ? 'green' : finalMain >= p.target * 0.85 ? 'yellow' : 'red') : 'indigo';
       
@@ -1265,7 +1259,7 @@ Page({
 
       const investGain = finalMain - principalContrib;
       const ratio = finalMain > 0 ? (investGain / finalMain * 100) : 0;
-      card2Label = '钱生钱占比';
+      card2Label = '投资收益占比';
       card2Value = ratio.toFixed(1) + '%';
       card2Color = 'indigo';
       card2Sub = `钱生钱 ${formatMoney(investGain)} / 总 ${formatMoney(finalMain)}`;
@@ -1287,7 +1281,7 @@ Page({
         const ratio2 = finalMain / p.target;
         let badge, icon, label, hint;
         if (ratio2 >= 1) {
-          badge = 'level-green'; icon = 'fa-circle-check'; label = '超达成'; hint = '恭喜，你的规划已超出目标';
+          badge = 'level-green'; icon = 'fa-circle-check'; label = '超额达成'; hint = '恭喜，你的规划已超出目标';
         } else if (ratio2 >= 0.85) {
           badge = 'level-yellow'; icon = 'fa-circle'; label = '接近'; hint = '距目标差一点点，可适度增加权益类配置或调整月支出';
         } else {
@@ -1316,7 +1310,7 @@ Page({
     this.setData({
       hasResult: true,
       mainTitle,
-      timelineRange, timelineYears,
+      timelineMeta,
       card1Label, card1Value, card1Color, card1Sub,
       card1BadgeShow, card1BadgeClass, card1BadgeText, card1BadgeIcon,
       card2Label, card2Value, card2Color, card2Sub,
@@ -1337,7 +1331,7 @@ Page({
       { key: 's2', name: '目标可行性', score: index.breakdown.s2, max: 25 },
       { key: 's3', name: '收入增长假设', score: index.breakdown.s3, max: 20 },
       { key: 's4', name: '支出结构', score: index.breakdown.s4, max: 15 },
-      { key: 's5', name: '目标规模', score: index.breakdown.s5, max: 15 },
+      { key: 's5', name: '目标合理度', score: index.breakdown.s5, max: 15 },
     ].map(d => ({ ...d, pct: Math.round(d.score / d.max * 100), tone: dimTone(d.score, d.max) }));
 
     return {
@@ -1451,7 +1445,7 @@ Page({
         formatter: function(params) {
           const lines = [params[0].axisValue];
           params.forEach(item => {
-            lines.push(item.marker + item.seriesName + ': ' + item.value.toFixed(2) + 'w');
+            lines.push(item.marker + item.seriesName + ': ' + item.value.toFixed(2) + '万');
           });
           return lines.join('\n');
         }
@@ -1470,7 +1464,7 @@ Page({
       },
       yAxis: {
         type: 'value',
-        axisLabel: { fontSize: 10, color: '#9CA3AF', formatter: '{value}w' },
+        axisLabel: { fontSize: 10, color: '#9CA3AF', formatter: '{value}万' },
         splitLine: { lineStyle: { color: '#F3F4F6' } }
       },
       series: [
@@ -1521,16 +1515,16 @@ Page({
       yAxis: {
         type: 'value',
         stack: 'total',
-        axisLabel: { fontSize: 10, color: '#9CA3AF', formatter: '{value}w' },
+        axisLabel: { fontSize: 10, color: '#9CA3AF', formatter: '{value}万' },
         splitLine: { lineStyle: { color: '#F3F4F6' } }
       },
       series: [
-        { name: 'A 刚性', type: 'bar', stack: 'total', data: cf.map(r => +r.A.toFixed(2)), itemStyle: { color: COLORS.expA } },
-        { name: 'B 日常', type: 'bar', stack: 'total', data: cf.map(r => +r.B.toFixed(2)), itemStyle: { color: COLORS.expB } },
-        { name: 'C 大项', type: 'bar', stack: 'total', data: cf.map(r => +r.C.toFixed(2)), itemStyle: { color: COLORS.expC } },
-        { name: 'D 车贷', type: 'bar', stack: 'total', data: cf.map(r => +r.D.toFixed(2)), itemStyle: { color: COLORS.expD } },
-        { name: 'E 住房', type: 'bar', stack: 'total', data: cf.map(r => +r.E.toFixed(2)), itemStyle: { color: COLORS.expE } },
-        { name: 'F 其他', type: 'bar', stack: 'total', data: cf.map(r => +r.F.toFixed(2)), itemStyle: { color: COLORS.expF } },
+        { name: '固定支出', type: 'bar', stack: 'total', data: cf.map(r => +r.A.toFixed(2)), itemStyle: { color: COLORS.expA } },
+        { name: '日常支出', type: 'bar', stack: 'total', data: cf.map(r => +r.B.toFixed(2)), itemStyle: { color: COLORS.expB } },
+        { name: '年度大额支出', type: 'bar', stack: 'total', data: cf.map(r => +r.C.toFixed(2)), itemStyle: { color: COLORS.expC } },
+        { name: '车贷', type: 'bar', stack: 'total', data: cf.map(r => +r.D.toFixed(2)), itemStyle: { color: COLORS.expD } },
+        { name: '住房支出', type: 'bar', stack: 'total', data: cf.map(r => +r.E.toFixed(2)), itemStyle: { color: COLORS.expE } },
+        { name: '其他支出', type: 'bar', stack: 'total', data: cf.map(r => +r.F.toFixed(2)), itemStyle: { color: COLORS.expF } },
         { name: gName, type: 'bar', stack: 'total', data: cf.map(r => +r.G.toFixed(2)), itemStyle: { color: COLORS.expG } },
       ]
     };
@@ -1592,7 +1586,7 @@ Page({
       },
       yAxis: {
         type: 'value',
-        axisLabel: { fontSize: 10, color: '#9CA3AF', formatter: '{value}w' },
+        axisLabel: { fontSize: 10, color: '#9CA3AF', formatter: '{value}万' },
         splitLine: { lineStyle: { color: '#F3F4F6' } }
       },
       series: datasets
@@ -1621,7 +1615,7 @@ Page({
       },
       yAxis: {
         type: 'value',
-        axisLabel: { fontSize: 10, color: '#9CA3AF', formatter: '{value}w' },
+        axisLabel: { fontSize: 10, color: '#9CA3AF', formatter: '{value}万' },
         splitLine: { lineStyle: { color: '#F3F4F6' } }
       },
       series: [
@@ -1642,7 +1636,7 @@ Page({
           z: 2
         },
         {
-          name: '年结余',
+          name: '年度结余',
           type: 'line',
           data: cf.map(r => +r.savings.toFixed(2)),
           lineStyle: { color: COLORS.primary, width: 3 },
